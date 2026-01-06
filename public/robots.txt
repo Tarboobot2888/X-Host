@@ -1,0 +1,39 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /panel/
+Disallow: /billing/
+Disallow: /client/
+Disallow: /login/
+Disallow: /register/
+Disallow: /password/
+Disallow: /api/
+Disallow: /cgi-bin/
+Disallow: /tmp/
+Disallow: /logs/
+Disallow: /core/
+Disallow: /vendor/
+Disallow: /node_modules/
+Disallow: /config/
+Disallow: /storage/
+Disallow: /cache/
+Disallow: /includes/
+Disallow: /*?*
+Disallow: /*&*
+
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.gif$
+Allow: /*.svg$
+Allow: /*.webp$
+Allow: /*.woff$
+Allow: /*.woff2$
+
+Crawl-delay: 5
+
+Sitemap: https://x-host.site/sitemap.xml
