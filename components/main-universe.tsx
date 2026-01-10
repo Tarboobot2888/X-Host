@@ -6,6 +6,8 @@ import { CosmicNavbar } from "./cosmic-navbar"
 import { HeroSection } from "./sections/hero-section"
 import { ThemeProvider } from "./theme-provider"
 import { StarField } from "./star-field"
+import { WormholeLoader } from "./wormhole-loader"
+import { usePerformanceTier } from "@/hooks/use-performance-tier"
 
 const ServicesSection = lazy(() => import("./sections/services-section").then((m) => ({ default: m.ServicesSection })))
 const PricingSection = lazy(() => import("./sections/pricing-section").then((m) => ({ default: m.PricingSection })))
@@ -15,16 +17,9 @@ const CosmicFooter = lazy(() => import("./cosmic-footer").then((m) => ({ default
 const BackToTop = lazy(() => import("./back-to-top").then((m) => ({ default: m.BackToTop })))
 const FloatingCTA = lazy(() => import("./floating-cta").then((m) => ({ default: m.FloatingCTA })))
 
-function SectionLoader() {
-  return (
-    <div className="min-h-[150px] flex items-center justify-center">
-      <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-    </div>
-  )
-}
-
 export function MainUniverse() {
   const [mounted, setMounted] = useState(false)
+  usePerformanceTier()
 
   useEffect(() => {
     setMounted(true)
@@ -46,23 +41,23 @@ export function MainUniverse() {
         <main className="relative z-10">
           <HeroSection />
 
-          <Suspense fallback={<SectionLoader />}>
+          <Suspense fallback={<WormholeLoader />}>
             <ServicesSection />
           </Suspense>
 
-          <Suspense fallback={<SectionLoader />}>
+          <Suspense fallback={<WormholeLoader />}>
             <PricingSection />
           </Suspense>
 
-          <Suspense fallback={<SectionLoader />}>
+          <Suspense fallback={<WormholeLoader />}>
             <AboutSection />
           </Suspense>
 
-          <Suspense fallback={<SectionLoader />}>
+          <Suspense fallback={<WormholeLoader />}>
             <ContactSection />
           </Suspense>
 
-          <Suspense fallback={<SectionLoader />}>
+          <Suspense fallback={<WormholeLoader />}>
             <CosmicFooter />
           </Suspense>
         </main>

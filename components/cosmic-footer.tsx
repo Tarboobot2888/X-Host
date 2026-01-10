@@ -3,43 +3,15 @@
 import { useTheme } from "./theme-provider"
 import Link from "next/link"
 import { Facebook, Instagram, MessageCircle, Send } from "lucide-react"
-
-const footerLinks = [
-  {
-    titleAr: "الخدمات",
-    titleEn: "Services",
-    links: [
-      { ar: "بيئات التطوير", en: "Dev Stack", href: "#services" },
-      { ar: "خوادم الويب", en: "Web Servers", href: "#services" },
-      { ar: "الآلات الافتراضية", en: "VPS", href: "#services" },
-      { ar: "استضافة البوتات", en: "Bot Hosting", href: "#services" },
-    ],
-  },
-  {
-    titleAr: "الشركة",
-    titleEn: "Company",
-    links: [
-      { ar: "من نحن", en: "About Us", href: "#about" },
-      { ar: "الباقات", en: "Pricing", href: "#pricing" },
-      { ar: "تواصل معنا", en: "Contact", href: "#contact" },
-    ],
-  },
-  {
-    titleAr: "الدعم",
-    titleEn: "Support",
-    links: [
-      { ar: "مركز المساعدة", en: "Help Center", href: "https://x-host.cloud" },
-      { ar: "الأسئلة الشائعة", en: "FAQ", href: "https://x-host.cloud" },
-      { ar: "حالة الخدمة", en: "Status", href: "https://x-host.cloud" },
-    ],
-  },
-]
+import Image from "next/image"
+import { cosmicCopy } from "@/data/cosmic.copy"
+import { cosmicLinks } from "@/data/cosmic.links"
 
 const socialLinks = [
-  { icon: Facebook, href: "https://www.facebook.com/profile.php?id=61586327270575" },
-  { icon: Instagram, href: "https://www.instagram.com/tarboo455" },
-  { icon: MessageCircle, href: "https://wa.me/+201016948771" },
-  { icon: Send, href: "https://t.me/x_host_cloud" },
+  { icon: Facebook, href: cosmicLinks.social.facebook },
+  { icon: Instagram, href: cosmicLinks.social.instagram },
+  { icon: MessageCircle, href: cosmicLinks.social.whatsapp },
+  { icon: Send, href: cosmicLinks.social.telegram },
 ]
 
 export function CosmicFooter() {
@@ -51,14 +23,11 @@ export function CosmicFooter() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-10">
           <div className="lg:col-span-2">
             <Link href="#home" className="flex items-center gap-3 mb-4">
-              <img src="https://a.top4top.io/p_3605ck8qd0.png" alt="X-Host" className="w-11 h-11 object-contain" />
-              <span className="text-xl font-bold text-cosmic-gradient">X-Host</span>
+              <Image src="/x-host-logo.svg" alt={t(cosmicCopy.brand.logoAlt)} width={44} height={44} className="object-contain" />
+              <span className="text-xl font-bold text-cosmic-gradient">{t(cosmicCopy.brand.name)}</span>
             </Link>
             <p className="text-sm text-muted-foreground mb-5 max-w-sm leading-relaxed">
-              {t(
-                "نحن لا نستضيف فقط... نحن نُشغّل المستقبل. كون رقمي كامل لاستضافة مشاريعك.",
-                "We don't just host... we power the future. A complete digital universe for hosting your projects.",
-              )}
+              {t(cosmicCopy.footer.description)}
             </p>
             <div className="flex gap-2">
               {socialLinks.map((social, index) => (
@@ -75,17 +44,17 @@ export function CosmicFooter() {
             </div>
           </div>
 
-          {footerLinks.map((section, index) => (
-            <div key={index}>
-              <h4 className="font-semibold mb-4 text-sm">{t(section.titleAr, section.titleEn)}</h4>
+          {cosmicCopy.footer.sections.map((section) => (
+            <div key={section.id}>
+              <h4 className="font-semibold mb-4 text-sm">{t(section.title)}</h4>
               <ul className="space-y-2">
-                {section.links.map((link, i) => (
-                  <li key={i}>
+                {section.links.map((link) => (
+                  <li key={link.id}>
                     <Link
-                      href={link.href}
+                      href={link.href === "cloud" ? cosmicLinks.cloud : link.href}
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      {t(link.ar, link.en)}
+                      {t(link.label)}
                     </Link>
                   </li>
                 ))}
@@ -96,24 +65,21 @@ export function CosmicFooter() {
 
         <div className="pt-6 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} X-Host. {t("جميع الحقوق محفوظة", "All rights reserved")}
+            © {new Date().getFullYear()} {t(cosmicCopy.brand.name)}. {t(cosmicCopy.footer.rights)}
           </p>
           <div className="flex items-center gap-6 text-xs text-muted-foreground">
-            <Link href="https://x-host.cloud" className="hover:text-foreground transition-colors">
-              {t("سياسة الخصوصية", "Privacy")}
+            <Link href={cosmicLinks.privacy} className="hover:text-foreground transition-colors">
+              {t(cosmicCopy.footer.privacy)}
             </Link>
-            <Link href="https://x-host.cloud" className="hover:text-foreground transition-colors">
-              {t("الشروط", "Terms")}
+            <Link href={cosmicLinks.terms} className="hover:text-foreground transition-colors">
+              {t(cosmicCopy.footer.terms)}
             </Link>
           </div>
         </div>
 
         <div className="mt-8 text-center">
           <p className="text-xs text-muted-foreground/60 italic">
-            {t(
-              '"حيث يلتقي الخيال بالواقع، والأحلام بالتكنولوجيا"',
-              '"Where imagination meets reality, dreams meet technology"',
-            )}
+            {t(cosmicCopy.footer.motto)}
           </p>
         </div>
       </div>

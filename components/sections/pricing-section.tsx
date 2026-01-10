@@ -1,161 +1,43 @@
 "use client"
 
-import { useState, memo } from "react"
+import { useMemo, useState, memo } from "react"
 import { motion } from "framer-motion"
 import { Cpu, HardDrive, Database, Zap, Infinity, Rocket, Star } from "lucide-react"
 import { useTheme } from "../theme-provider"
 import Link from "next/link"
-
-const plans = [
-  {
-    id: "free",
-    nameAr: "X-Host Free",
-    nameEn: "X-Host Free",
-    subtitleAr: "الكوكب التجريبي",
-    subtitleEn: "Trial Planet",
-    price: 25,
-    period: "week",
-    color: "#22c55e",
-    popular: false,
-    specs: { cpu: 100, ram: 1000, disk: 1500, db: 1 },
-  },
-  {
-    id: "spark",
-    nameAr: "X-Host Spark",
-    nameEn: "X-Host Spark",
-    subtitleAr: "كوكب الشرارة",
-    subtitleEn: "Spark Planet",
-    price: 50,
-    period: "month",
-    color: "#94a3b8",
-    popular: false,
-    specs: { cpu: 200, ram: 2000, disk: 2500, db: 1 },
-  },
-  {
-    id: "rise",
-    nameAr: "X-Host Rise",
-    nameEn: "X-Host Rise",
-    subtitleAr: "كوكب الصعود",
-    subtitleEn: "Rise Planet",
-    price: 100,
-    period: "month",
-    color: "#a16207",
-    popular: false,
-    specs: { cpu: 400, ram: 6000, disk: 7000, db: 1 },
-  },
-  {
-    id: "drive",
-    nameAr: "X-Host Drive",
-    nameEn: "X-Host Drive",
-    subtitleAr: "كوكب الدفع",
-    subtitleEn: "Drive Planet",
-    price: 125,
-    period: "month",
-    color: "#3b82f6",
-    popular: true,
-    specs: { cpu: 500, ram: 8000, disk: 10000, db: 1 },
-  },
-  {
-    id: "boost",
-    nameAr: "X-Host Boost",
-    nameEn: "X-Host Boost",
-    subtitleAr: "كوكب التسارع",
-    subtitleEn: "Boost Planet",
-    price: 150,
-    period: "month",
-    color: "#1f2937",
-    popular: false,
-    specs: { cpu: 600, ram: 10000, disk: 12000, db: 1 },
-  },
-  {
-    id: "scale",
-    nameAr: "X-Host Scale",
-    nameEn: "X-Host Scale",
-    subtitleAr: "كوكب التوسع",
-    subtitleEn: "Scale Planet",
-    price: 175,
-    period: "month",
-    color: "#eab308",
-    popular: false,
-    specs: { cpu: 700, ram: 12000, disk: 14000, db: 1 },
-  },
-  {
-    id: "power",
-    nameAr: "X-Host Power",
-    nameEn: "X-Host Power",
-    subtitleAr: "كوكب القوة",
-    subtitleEn: "Power Planet",
-    price: 200,
-    period: "month",
-    color: "#ef4444",
-    popular: false,
-    specs: { cpu: 800, ram: 14000, disk: 16000, db: 1 },
-  },
-  {
-    id: "elite",
-    nameAr: "X-Host Elite",
-    nameEn: "X-Host Elite",
-    subtitleAr: "كوكب النخبة",
-    subtitleEn: "Elite Planet",
-    price: 225,
-    period: "month",
-    color: "#a855f7",
-    popular: false,
-    specs: { cpu: 800, ram: 18000, disk: 20000, db: 1 },
-  },
-  {
-    id: "titan",
-    nameAr: "X-Host Titan",
-    nameEn: "X-Host Titan",
-    subtitleAr: "كوكب العملاق",
-    subtitleEn: "Titan Planet",
-    price: 250,
-    period: "month",
-    color: "#f8fafc",
-    popular: false,
-    specs: { cpu: 1000, ram: 20000, disk: 25000, db: 1 },
-  },
-  {
-    id: "apex",
-    nameAr: "X-Host Apex",
-    nameEn: "X-Host Apex",
-    subtitleAr: "كوكب القمة",
-    subtitleEn: "Apex Planet",
-    price: 275,
-    period: "month",
-    color: "#dc2626",
-    popular: false,
-    specs: { cpu: 1100, ram: 25000, disk: 30000, db: 1 },
-  },
-  {
-    id: "infinity",
-    nameAr: "X-Host Infinity",
-    nameEn: "X-Host Infinity",
-    subtitleAr: "كوكب اللانهائية",
-    subtitleEn: "Infinity Planet",
-    price: 300,
-    period: "month",
-    color: "#06b6d4",
-    popular: false,
-    infinity: true,
-    specs: { cpu: 0, ram: 30000, disk: 50000, db: 1 },
-  },
-]
+import { cosmicCopy } from "@/data/cosmic.copy"
+import { cosmicLinks } from "@/data/cosmic.links"
+import { cosmicPlans } from "@/data/cosmic.plans"
+import { useSelectionStore } from "@/stores/selection-store"
 
 interface PlanCardProps {
-  plan: (typeof plans)[0]
+  plan: (typeof cosmicPlans)[0]
   index: number
-  t: (ar: string, en: string) => string
+  t: (text: { ar: string; en: string }) => string
 }
 
 const PlanCard = memo(function PlanCard({ plan, index, t }: PlanCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isLaunching, setIsLaunching] = useState(false)
+  const selectedServicePath = useSelectionStore((state) => state.servicePath)
+  const setSelectedPlan = useSelectionStore((state) => state.setSelectedPlan)
+  const touchSelection = useSelectionStore((state) => state.touch)
+
+  const redirectUrl = useMemo(() => {
+    const url = new URL(cosmicLinks.cloud)
+    url.searchParams.set("plan", plan.id)
+    if (selectedServicePath.length > 0) {
+      url.searchParams.set("service", selectedServicePath.join("/"))
+    }
+    return url.toString()
+  }, [plan.id, selectedServicePath])
 
   const handleLaunch = () => {
     setIsLaunching(true)
+    setSelectedPlan(plan.id)
+    touchSelection()
     setTimeout(() => {
-      window.open("https://x-host.cloud/", "_blank")
+      window.open(redirectUrl, "_blank")
       setIsLaunching(false)
     }, 600)
   }
@@ -174,7 +56,7 @@ const PlanCard = memo(function PlanCard({ plan, index, t }: PlanCardProps) {
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
           <span className="px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-medium flex items-center gap-1">
             <Star className="w-3 h-3" />
-            {t("الأكثر طلباً", "Popular")}
+            {t(cosmicCopy.pricing.popular)}
           </span>
         </div>
       )}
@@ -205,39 +87,45 @@ const PlanCard = memo(function PlanCard({ plan, index, t }: PlanCardProps) {
             )}
           </div>
           <div>
-            <h3 className="font-semibold text-sm">{t(plan.nameAr, plan.nameEn)}</h3>
-            <p className="text-xs text-muted-foreground">{t(plan.subtitleAr, plan.subtitleEn)}</p>
+            <h3 className="font-semibold text-sm">{t(plan.name)}</h3>
+            <p className="text-xs text-muted-foreground">{t(plan.subtitle)}</p>
           </div>
         </div>
 
         <div className="mb-5 relative z-10">
           <div className="flex items-baseline gap-1">
             <span className="text-2xl font-bold">{plan.price}</span>
-            <span className="text-sm text-muted-foreground">EGP</span>
+            <span className="text-sm text-muted-foreground">{t(cosmicCopy.pricing.currency)}</span>
           </div>
           <span className="text-xs text-muted-foreground">
-            / {plan.period === "week" ? t("أسبوع", "week") : t("شهر", "month")}
+            / {plan.period === "week" ? t(cosmicCopy.pricing.periodWeek) : t(cosmicCopy.pricing.periodMonth)}
           </span>
         </div>
 
         <div className="space-y-2.5 flex-1 mb-5 relative z-10">
-          <div className="flex items-center gap-2 text-sm">
+          <div className="flex items-center gap-2 text-sm" title={t(cosmicCopy.pricing.tooltipCpu)}>
             <Cpu className="w-4 h-4 text-primary flex-shrink-0" />
             <span className="text-muted-foreground">
-              {plan.specs.cpu === 0 ? t("غير محدود", "Unlimited") : `${plan.specs.cpu} vCores`}
+              {plan.specs.cpu === 0 ? t(cosmicCopy.pricing.unlimited) : `${plan.specs.cpu} ${t(cosmicCopy.pricing.cpuUnit)}`}
             </span>
           </div>
-          <div className="flex items-center gap-2 text-sm">
+          <div className="flex items-center gap-2 text-sm" title={t(cosmicCopy.pricing.tooltipRam)}>
             <Zap className="w-4 h-4 text-cyan-400 flex-shrink-0" />
-            <span className="text-muted-foreground">{plan.specs.ram} MB RAM</span>
+            <span className="text-muted-foreground">
+              {plan.specs.ram} {t(cosmicCopy.pricing.ramUnit)}
+            </span>
           </div>
-          <div className="flex items-center gap-2 text-sm">
+          <div className="flex items-center gap-2 text-sm" title={t(cosmicCopy.pricing.tooltipDisk)}>
             <HardDrive className="w-4 h-4 text-purple-400 flex-shrink-0" />
-            <span className="text-muted-foreground">{plan.specs.disk} MB Disk</span>
+            <span className="text-muted-foreground">
+              {plan.specs.disk} {t(cosmicCopy.pricing.diskUnit)}
+            </span>
           </div>
-          <div className="flex items-center gap-2 text-sm">
+          <div className="flex items-center gap-2 text-sm" title={t(cosmicCopy.pricing.tooltipDb)}>
             <Database className="w-4 h-4 text-yellow-400 flex-shrink-0" />
-            <span className="text-muted-foreground">{plan.specs.db} MySQL</span>
+            <span className="text-muted-foreground">
+              {plan.specs.db} {t(cosmicCopy.pricing.dbUnit)}
+            </span>
           </div>
         </div>
 
@@ -252,7 +140,7 @@ const PlanCard = memo(function PlanCard({ plan, index, t }: PlanCardProps) {
         >
           <span className="flex items-center justify-center gap-2">
             <Rocket className={`w-4 h-4 ${isLaunching ? "animate-bounce" : ""}`} />
-            {isLaunching ? t("جاري الإطلاق...", "Launching...") : t("إنشاء سيرفر", "Create Server")}
+            {isLaunching ? t(cosmicCopy.pricing.launching) : t(cosmicCopy.pricing.launch)}
           </span>
         </button>
       </div>
@@ -273,18 +161,18 @@ export function PricingSection() {
           className="text-center mb-12"
         >
           <span className="inline-block px-4 py-1.5 rounded-full quantum-glass text-sm text-primary mb-4">
-            {t("باقات الاستضافة", "Hosting Plans")}
+            {t(cosmicCopy.pricing.badge)}
           </span>
           <h2 className="text-3xl md:text-4xl font-bold mb-3">
-            {t("اختر كوكبك الرقمي", "Choose Your Digital Planet")}
+            {t(cosmicCopy.pricing.title)}
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
-            {t("كل باقة مصممة لتناسب احتياجات مشروعك", "Every plan designed to fit your project needs")}
+            {t(cosmicCopy.pricing.description)}
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {plans.map((plan, index) => (
+          {cosmicPlans.map((plan, index) => (
             <PlanCard key={plan.id} plan={plan} index={index} t={t} />
           ))}
         </div>
@@ -296,13 +184,14 @@ export function PricingSection() {
           className="text-center mt-10"
         >
           <Link
-            href="https://x-host.cloud/"
+            href={cosmicLinks.cloud}
             target="_blank"
             className="inline-flex items-center gap-2 text-primary hover:underline text-sm"
           >
-            {t("عرض جميع الباقات والمقارنة", "View all plans and compare")}
+            {t(cosmicCopy.pricing.viewAll)}
             <span>←</span>
           </Link>
+          <p className="text-xs text-muted-foreground mt-2">{t(cosmicCopy.pricing.compareHint)}</p>
         </motion.div>
       </div>
     </section>

@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Rocket, X } from "lucide-react"
 import { useTheme } from "./theme-provider"
 import Link from "next/link"
+import { cosmicCopy } from "@/data/cosmic.copy"
+import { cosmicLinks } from "@/data/cosmic.links"
 
 export function FloatingCTA() {
   const { t } = useTheme()
@@ -42,12 +44,12 @@ export function FloatingCTA() {
             </button>
 
             <Link
-              href="https://x-host.cloud/"
+              href={cosmicLinks.cloud}
               target="_blank"
               className="flex items-center gap-3 px-6 py-4 bg-primary text-primary-foreground rounded-full font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow animate-pulse-glow"
             >
               <Rocket className="w-5 h-5" />
-              <span>{t("ابدأ الآن", "Start Now")}</span>
+              <span>{t(cosmicCopy.floatingCta.label)}</span>
             </Link>
           </div>
         </motion.div>

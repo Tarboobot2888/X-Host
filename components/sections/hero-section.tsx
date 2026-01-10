@@ -5,6 +5,8 @@ import { motion } from "framer-motion"
 import { Rocket, Zap, Shield, Globe, Play } from "lucide-react"
 import { useTheme } from "../theme-provider"
 import Link from "next/link"
+import { cosmicCopy } from "@/data/cosmic.copy"
+import { cosmicLinks } from "@/data/cosmic.links"
 
 export function HeroSection() {
   const { t } = useTheme()
@@ -20,6 +22,12 @@ export function HeroSection() {
     window.addEventListener("mousemove", handleMouseMove)
     return () => window.removeEventListener("mousemove", handleMouseMove)
   }, [])
+
+  const featureIcons = {
+    speed: { icon: Zap, color: "#ffcc00" },
+    security: { icon: Shield, color: "#00ffcc" },
+    global: { icon: Globe, color: "#0066ff" },
+  }
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
@@ -49,7 +57,7 @@ export function HeroSection() {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
             </span>
             <span className="text-sm text-muted-foreground">
-              {t("جميع الأنظمة تعمل بكفاءة", "All Systems Operational")}
+              {t(cosmicCopy.hero.status)}
             </span>
           </motion.div>
 
@@ -71,10 +79,10 @@ export function HeroSection() {
               }}
               transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
             >
-              X-Host
+              {t(cosmicCopy.brand.name)}
             </motion.span>
             <br />
-            <span className="text-foreground">{t("كون رقمي للاستضافة", "Digital Hosting Universe")}</span>
+            <span className="text-foreground">{t(cosmicCopy.hero.headline)}</span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -84,10 +92,7 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed"
           >
-            {t(
-              "نحن لا نستضيف فقط... نحن نُشغّل المستقبل. سيرفراتك تبدأ هنا، في عالم من القوة والسرعة والتحكم الكامل.",
-              "We don't just host... we power the future. Your servers start here, in a world of power, speed, and complete control.",
-            )}
+            {t(cosmicCopy.hero.description)}
           </motion.p>
 
           {/* CTA Buttons */}
@@ -99,7 +104,7 @@ export function HeroSection() {
           >
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Link
-                href="https://x-host.cloud/"
+                href={cosmicLinks.cloud}
                 target="_blank"
                 className="group relative inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-full font-semibold text-lg overflow-hidden shadow-lg shadow-primary/25"
               >
@@ -111,7 +116,7 @@ export function HeroSection() {
                 />
                 <span className="relative z-10 flex items-center gap-2">
                   <Rocket className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                  {t("ابدأ رحلتك الكونية", "Start Your Cosmic Journey")}
+                  {t(cosmicCopy.hero.primaryCta)}
                 </span>
               </Link>
             </motion.div>
@@ -121,7 +126,7 @@ export function HeroSection() {
               className="group inline-flex items-center gap-2 px-8 py-4 border border-border rounded-full font-medium hover:bg-secondary/50 transition-colors"
             >
               <Play className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              {t("اكتشف الخدمات", "Explore Services")}
+              {t(cosmicCopy.hero.secondaryCta)}
             </Link>
           </motion.div>
 
@@ -132,34 +137,11 @@ export function HeroSection() {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto"
           >
-            {[
-              {
-                icon: Zap,
-                titleAr: "سرعة فائقة",
-                titleEn: "Ultra Fast",
-                descAr: "أداء صاروخي يتفوق على المنافسين",
-                descEn: "Rocket performance that beats competitors",
-                color: "#ffcc00",
-              },
-              {
-                icon: Shield,
-                titleAr: "حماية كونية",
-                titleEn: "Cosmic Protection",
-                descAr: "أمان متعدد الطبقات لبياناتك",
-                descEn: "Multi-layer security for your data",
-                color: "#00ffcc",
-              },
-              {
-                icon: Globe,
-                titleAr: "انتشار عالمي",
-                titleEn: "Global Reach",
-                descAr: "خوادم موزعة حول العالم",
-                descEn: "Servers distributed worldwide",
-                color: "#0066ff",
-              },
-            ].map((feature, index) => (
+            {cosmicCopy.hero.features.map((feature, index) => {
+              const { icon: Icon, color } = featureIcons[feature.id]
+              return (
               <motion.div
-                key={index}
+                key={feature.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 + index * 0.1 }}
@@ -168,24 +150,24 @@ export function HeroSection() {
               >
                 <motion.div
                   className="w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4 transition-colors"
-                  style={{ backgroundColor: `${feature.color}15` }}
+                  style={{ backgroundColor: `${color}15` }}
                   whileHover={{ rotate: [0, -10, 10, 0] }}
                   transition={{ duration: 0.5 }}
                 >
-                  <feature.icon className="w-7 h-7" style={{ color: feature.color }} />
+                  <Icon className="w-7 h-7" style={{ color }} />
                 </motion.div>
                 <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
-                  {t(feature.titleAr, feature.titleEn)}
+                  {t(feature.title)}
                 </h3>
-                <p className="text-sm text-muted-foreground">{t(feature.descAr, feature.descEn)}</p>
+                <p className="text-sm text-muted-foreground">{t(feature.description)}</p>
               </motion.div>
-            ))}
+            })}
           </motion.div>
 
           {/* Trusted By Section */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }} className="mt-20">
             <p className="text-sm text-muted-foreground mb-6">
-              {t("موثوق من آلاف المطورين", "Trusted by thousands of developers")}
+              {t(cosmicCopy.hero.trustedBy)}
             </p>
             <div className="flex items-center justify-center gap-8 opacity-50">
               {[1, 2, 3, 4, 5].map((i) => (

@@ -4,64 +4,23 @@ import { motion, useInView } from "framer-motion"
 import { useRef } from "react"
 import { Shield, Zap, Clock, Users, Award, Headphones } from "lucide-react"
 import { useTheme } from "../theme-provider"
-
-const features = [
-  {
-    icon: Zap,
-    titleAr: "أداء فائق السرعة",
-    titleEn: "Lightning Fast Performance",
-    descAr: "خوادم SSD NVMe مع شبكة 10Gbps لأقصى سرعة",
-    descEn: "SSD NVMe servers with 10Gbps network for maximum speed",
-    color: "#ffcc00",
-  },
-  {
-    icon: Shield,
-    titleAr: "حماية متقدمة",
-    titleEn: "Advanced Protection",
-    descAr: "حماية DDoS متعددة الطبقات وجدار حماية ذكي",
-    descEn: "Multi-layer DDoS protection and intelligent firewall",
-    color: "#00ffcc",
-  },
-  {
-    icon: Clock,
-    titleAr: "وقت تشغيل 99.9%",
-    titleEn: "99.9% Uptime",
-    descAr: "ضمان استمرارية الخدمة على مدار الساعة",
-    descEn: "Guaranteed service continuity around the clock",
-    color: "#0066ff",
-  },
-  {
-    icon: Headphones,
-    titleAr: "دعم فني 24/7",
-    titleEn: "24/7 Support",
-    descAr: "فريق دعم متاح دائماً لمساعدتك",
-    descEn: "Support team always available to help you",
-    color: "#ff3366",
-  },
-  {
-    icon: Users,
-    titleAr: "مجتمع نشط",
-    titleEn: "Active Community",
-    descAr: "انضم لمجتمع من المطورين والمبدعين",
-    descEn: "Join a community of developers and creators",
-    color: "#a855f7",
-  },
-  {
-    icon: Award,
-    titleAr: "جودة مضمونة",
-    titleEn: "Guaranteed Quality",
-    descAr: "أعلى معايير الجودة في الصناعة",
-    descEn: "Highest quality standards in the industry",
-    color: "#06b6d4",
-  },
-]
+import { cosmicCopy } from "@/data/cosmic.copy"
 
 const stats = [
-  { value: 10000, suffix: "+", labelAr: "عميل سعيد", labelEn: "Happy Clients" },
-  { value: 50000, suffix: "+", labelAr: "سيرفر نشط", labelEn: "Active Servers" },
-  { value: 99.9, suffix: "%", labelAr: "وقت التشغيل", labelEn: "Uptime" },
-  { value: 24, suffix: "/7", labelAr: "دعم فني", labelEn: "Support" },
+  { value: 10000, suffix: "+", id: "clients" },
+  { value: 50000, suffix: "+", id: "servers" },
+  { value: 99.9, suffix: "%", id: "uptime" },
+  { value: 24, suffix: "/7", id: "support" },
 ]
+
+const featureMap = {
+  performance: { icon: Zap, color: "#ffcc00" },
+  protection: { icon: Shield, color: "#00ffcc" },
+  uptime: { icon: Clock, color: "#0066ff" },
+  support: { icon: Headphones, color: "#ff3366" },
+  community: { icon: Users, color: "#a855f7" },
+  quality: { icon: Award, color: "#06b6d4" },
+}
 
 function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
   const ref = useRef(null)
@@ -98,16 +57,13 @@ export function AboutSection() {
           className="text-center mb-16"
         >
           <span className="inline-block px-4 py-1.5 rounded-full quantum-glass text-sm text-primary mb-4">
-            {t("من نحن", "About Us")}
+            {t(cosmicCopy.about.badge)}
           </span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-            {t("نحن نُشغّل المستقبل", "We Power The Future")}
+            {t(cosmicCopy.about.title)}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            {t(
-              "X-Host ليست مجرد شركة استضافة، بل هي كون رقمي كامل حيث تتحول أفكارك إلى واقع",
-              "X-Host isn't just a hosting company, it's a complete digital universe where your ideas become reality",
-            )}
+            {t(cosmicCopy.about.description)}
           </p>
         </motion.div>
 
@@ -125,16 +81,20 @@ export function AboutSection() {
               className="quantum-glass rounded-2xl p-6 text-center"
             >
               <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-              <div className="text-sm text-muted-foreground mt-2">{t(stat.labelAr, stat.labelEn)}</div>
+              <div className="text-sm text-muted-foreground mt-2">
+                {t(cosmicCopy.about.stats.find((item) => item.id === stat.id)!.label)}
+              </div>
             </motion.div>
           ))}
         </motion.div>
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature, index) => (
+          {cosmicCopy.about.features.map((feature, index) => {
+            const { icon: Icon, color } = featureMap[feature.id]
+            return (
             <motion.div
-              key={index}
+              key={feature.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -144,18 +104,18 @@ export function AboutSection() {
             >
               <motion.div
                 className="w-14 h-14 rounded-xl flex items-center justify-center mb-4"
-                style={{ backgroundColor: `${feature.color}15` }}
+                style={{ backgroundColor: `${color}15` }}
                 whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
                 transition={{ duration: 0.5 }}
               >
-                <feature.icon className="w-7 h-7" style={{ color: feature.color }} />
+                <Icon className="w-7 h-7" style={{ color }} />
               </motion.div>
               <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
-                {t(feature.titleAr, feature.titleEn)}
+                {t(feature.title)}
               </h3>
-              <p className="text-muted-foreground">{t(feature.descAr, feature.descEn)}</p>
+              <p className="text-muted-foreground">{t(feature.description)}</p>
             </motion.div>
-          ))}
+          })}
         </div>
 
         {/* Mission Statement */}
@@ -174,13 +134,10 @@ export function AboutSection() {
           />
           <div className="relative z-10">
             <h3 className="text-2xl md:text-3xl font-bold mb-4 text-cosmic-gradient">
-              {t("رؤيتنا الكونية", "Our Cosmic Vision")}
+              {t(cosmicCopy.about.missionTitle)}
             </h3>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              {t(
-                '"حيث يلتقي الخيال بالواقع، والأحلام بالتكنولوجيا، والمستقبل بالحاضر... في رحلة كونية واحدة، نحو آفاق لا محدودة."',
-                '"Where imagination meets reality, dreams meet technology, and the future meets the present... in one cosmic journey, towards unlimited horizons."',
-              )}
+              {t(cosmicCopy.about.missionQuote)}
             </p>
           </div>
         </motion.div>
