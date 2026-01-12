@@ -1,565 +1,515 @@
 "use client"
 
 import type React from "react"
-import { useEffect, useState, useCallback, memo, useRef } from "react"
-import { motion, AnimatePresence, useAnimation } from "framer-motion"
+import { useEffect, useState, useCallback, useRef } from "react"
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion"
 
 interface CosmicIntroProps {
   onComplete: () => void
 }
 
-const messages = [
-  "حيث تلتقي التكنولوجيا بالإبداع",
-  "استضافة المستقبل تبدأ هنا",
-  "قوة - سرعة - موثوقية"
-]
+const messages = ["حلول استضافة متكاملة", "بنية تحتية متطورة", "دعم فني على مدار الساعة"]
 
-type Phase = "entrance" | "logo3d" | "messages" | "transition" | "complete"
-
-const StarParticle = memo(({ x, y, size, delay }: { x: number; y: number; size: number; delay: number }) => {
-  const controls = useAnimation()
-  
-  useEffect(() => {
-    const sequence = async () => {
-      await controls.start({
-        opacity: [0, 1, 0.5, 1, 0],
-        scale: [0.5, 1.2, 0.8, 1.1, 0.5],
-        transition: {
-          duration: 3,
-          delay: delay,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }
-      })
-    }
-    sequence()
-  }, [controls, delay])
-
-  return (
-    <motion.div
-      className="absolute rounded-full bg-gradient-to-r from-blue-300/80 via-cyan-300/60 to-white/90"
-      style={{
-        left: `${x}%`,
-        top: `${y}%`,
-        width: size,
-        height: size,
-        filter: "blur(0.5px)",
-      }}
-      animate={controls}
-    />
-  )
-})
-StarParticle.displayName = "StarParticle"
-
-// Create dynamic particles for stars
-const starParticles = Array.from({ length: 30 }, (_, i) => ({
-  id: i,
-  x: Math.random() * 100,
-  y: Math.random() * 100,
-  size: Math.random() * 1.5 + 0.5,
-  delay: Math.random() * 2,
-}))
-
-// Nebula particles
-const nebulaParticles = Array.from({ length: 15 }, (_, i) => ({
-  id: i,
-  x: Math.random() * 100,
-  y: Math.random() * 100,
-  size: Math.random() * 80 + 40,
-  color: i % 3 === 0 ? "rgba(0, 102, 255, 0.1)" : 
-         i % 3 === 1 ? "rgba(102, 0, 255, 0.08)" : 
-         "rgba(0, 204, 255, 0.06)",
-  blur: Math.random() * 60 + 40,
-}))
+type Phase = "initial" | "logo" | "messages" | "transition" | "complete"
 
 export function CosmicIntro({ onComplete }: CosmicIntroProps) {
-  const [phase, setPhase] = useState<Phase>("entrance")
+  const [phase, setPhase] = useState<Phase>("initial")
   const [messageIndex, setMessageIndex] = useState(0)
-  const [cameraAngle, setCameraAngle] = useState({ x: 0, y: 0 })
-  const videoRef = useRef<HTMLVideoElement>(null)
+  const [isVisible, setIsVisible] = useState(true)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const mouseX = useMotionValue(0)
+  const mouseY = useMotionValue(0)
+  
+  const smoothX = useSpring(mouseX, { stiffness: 150, damping: 30 })
+  const smoothY = useSpring(mouseY, { stiffness: 150, damping: 30 })
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 40
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 40
+    mouseX.set(x)
+    mouseY.set(y)
+  }, [mouseX, mouseY])
 
   const handleComplete = useCallback(() => {
-    onComplete()
+    setIsVisible(false)
+    setTimeout(() => {
+      onComplete()
+    }, 300)
   }, [onComplete])
 
-  // Handle camera movement on mouse move
+  // Optimized animation timeline with smooth transitions
   useEffect(() => {
-    if (phase === "logo3d") {
-      const handleMouseMove = (e: MouseEvent) => {
-        const x = (e.clientX / window.innerWidth - 0.5) * 10
-        const y = (e.clientY / window.innerHeight - 0.5) * 10
-        setCameraAngle({ x, y })
-      }
-
-      window.addEventListener("mousemove", handleMouseMove)
-      return () => window.removeEventListener("mousemove", handleMouseMove)
-    }
-  }, [phase])
-
-  useEffect(() => {
-    const timeline: { delay: number; action: () => void }[] = [
-      { delay: 1000, action: () => setPhase("logo3d") },
-      { delay: 3000, action: () => setPhase("messages") },
-      { delay: 3500, action: () => setMessageIndex(1) },
-      { delay: 4500, action: () => setMessageIndex(2) },
-      { delay: 5500, action: () => setPhase("transition") },
-      { delay: 6500, action: () => setPhase("complete") },
-      { delay: 7000, action: handleComplete },
+    const timeline = [
+      { delay: 100, action: () => setPhase("logo") },
+      { delay: 2500, action: () => setPhase("messages") },
+      { delay: 4500, action: () => setMessageIndex(1) },
+      { delay: 6500, action: () => setMessageIndex(2) },
+      { delay: 8200, action: () => setPhase("transition") },
+      { delay: 9200, action: handleComplete },
     ]
 
     const timers = timeline.map(({ delay, action }) => setTimeout(action, delay))
     return () => timers.forEach(clearTimeout)
   }, [handleComplete])
 
-  // Play video when in logo3d phase
+  // Subtle floating animation values
+  const floatingY = useTransform(smoothY, [-20, 20], [-5, 5])
+  const floatingX = useTransform(smoothX, [-20, 20], [-5, 5])
+
+  // Black overlay for smooth fade transitions
+  const [overlayOpacity, setOverlayOpacity] = useState(0)
+
   useEffect(() => {
-    if (videoRef.current && phase === "logo3d") {
-      videoRef.current.play().catch(console.error)
+    if (phase === "transition") {
+      const timer = setTimeout(() => {
+        setOverlayOpacity(1)
+      }, 100)
+      return () => clearTimeout(timer)
+    } else if (phase === "logo") {
+      setOverlayOpacity(0)
     }
   }, [phase])
 
+  // Optimized background layers with smooth transitions
+  const BackgroundLayer = ({ index, opacity = 0.2 }: { index: number; opacity?: number }) => (
+    <motion.div
+      className="absolute inset-0"
+      style={{
+        background: `radial-gradient(circle at ${30 + index * 20}% ${20 + index * 10}%, 
+          rgba(${index * 20 + 50}, ${index * 30 + 100}, 255, ${opacity}) 0%, 
+          transparent 70%)`,
+      }}
+      animate={{
+        scale: [1, 1.02, 1],
+        opacity: [opacity * 0.8, opacity, opacity * 0.8],
+      }}
+      transition={{
+        duration: 5 + index,
+        repeat: Infinity,
+        ease: "easeInOut",
+        delay: index * 0.3,
+      }}
+    />
+  )
+
+  // Optimized particles with reduced count for performance
+  const particles = Array.from({ length: 8 }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 1.5 + 0.5,
+    duration: 4 + Math.random() * 3,
+    delay: i * 0.4,
+  }))
+
+  if (!isVisible) return null
+
   return (
-    <div className="fixed inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 overflow-hidden z-50">
-      {/* Cinematic Black Bars */}
-      <div className="absolute top-0 left-0 right-0 h-8 bg-black/80 z-40"></div>
-      <div className="absolute bottom-0 left-0 right-0 h-8 bg-black/80 z-40"></div>
-
-      {/* Animated cosmic background */}
-      <motion.div 
-        className="absolute inset-0"
-        animate={{
-          background: [
-            "radial-gradient(circle at 30% 20%, rgba(0, 102, 255, 0.2) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(102, 0, 255, 0.15) 0%, transparent 50%), linear-gradient(135deg, #050510 0%, #0a0a1a 100%)",
-            "radial-gradient(circle at 70% 30%, rgba(0, 102, 255, 0.25) 0%, transparent 50%), radial-gradient(circle at 30% 70%, rgba(102, 0, 255, 0.2) 0%, transparent 50%), linear-gradient(135deg, #050510 0%, #0a0a1a 100%)",
-            "radial-gradient(circle at 30% 20%, rgba(0, 102, 255, 0.2) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(102, 0, 255, 0.15) 0%, transparent 50%), linear-gradient(135deg, #050510 0%, #0a0a1a 100%)",
-          ]
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+    <>
+      {/* Black Overlay for smooth fade transitions */}
+      <motion.div
+        className="fixed inset-0 bg-black z-40 pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: overlayOpacity }}
+        transition={{ duration: 0.8, ease: "easeInOut" }}
       />
-
-      {/* Nebula clouds */}
-      <div className="absolute inset-0">
-        {nebulaParticles.map((particle) => (
-          <motion.div
-            key={particle.id}
-            className="absolute rounded-full"
-            style={{
-              left: `${particle.x}%`,
-              top: `${particle.y}%`,
-              width: particle.size,
-              height: particle.size,
-              background: particle.color,
-              filter: `blur(${particle.blur}px)`,
-            }}
-            animate={{
-              x: [0, Math.random() * 20 - 10, 0],
-              y: [0, Math.random() * 20 - 10, 0],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Star particles */}
-      <div className="absolute inset-0">
-        {starParticles.map((particle) => (
-          <StarParticle key={particle.id} {...particle} />
-        ))}
-      </div>
-
-      {/* Shooting stars */}
-      <AnimatePresence>
-        {phase === "logo3d" && (
-          <>
-            {[...Array(3)].map((_, i) => (
-              <motion.div
-                key={`shooting-${i}`}
-                className="absolute w-1 h-1 bg-gradient-to-r from-transparent via-white to-transparent"
-                initial={{
-                  x: `${Math.random() * 100}%`,
-                  y: `${Math.random() * 100}%`,
-                  opacity: 0,
-                }}
-                animate={{
-                  x: `${Math.random() * 100}%`,
-                  y: `${Math.random() * 100}%`,
-                  opacity: [0, 1, 0],
-                }}
-                transition={{
-                  duration: 1.5,
-                  delay: i * 0.5,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-              />
-            ))}
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* 3D Camera Container */}
-      <motion.div 
-        className="absolute inset-0 flex items-center justify-center"
-        style={{
-          perspective: "1000px",
-          transformStyle: "preserve-3d",
-        }}
-        animate={{
-          rotateX: cameraAngle.y,
-          rotateY: cameraAngle.x,
-        }}
-        transition={{ type: "spring", stiffness: 100, damping: 20 }}
+      
+      <motion.div
+        ref={containerRef}
+        className="fixed inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 overflow-hidden z-50"
+        onMouseMove={handleMouseMove}
+        initial={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
       >
-        <AnimatePresence mode="wait">
-          {/* Entrance Phase - Camera Zoom In */}
-          {phase === "entrance" && (
-            <motion.div
-              key="entrance"
-              className="absolute inset-0 flex items-center justify-center"
-              initial={{ scale: 1.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
-            >
-              <div className="relative">
-                {/* Light rays */}
-                {[...Array(8)].map((_, i) => (
-                  <motion.div
-                    key={`ray-${i}`}
-                    className="absolute w-1 h-40 origin-center"
-                    style={{
-                      background: "linear-gradient(to bottom, transparent, rgba(0, 102, 255, 0.5), transparent)",
-                      transform: `rotate(${i * 45}deg)`,
-                      left: "50%",
-                      top: "50%",
-                      marginLeft: "-0.5px",
-                      marginTop: "-20px",
-                    }}
-                    initial={{ scaleY: 0 }}
-                    animate={{ scaleY: 1 }}
-                    transition={{ delay: i * 0.05, duration: 0.3 }}
-                  />
-                ))}
-              </div>
-            </motion.div>
-          )}
+        {/* Background layers */}
+        {[1, 2, 3].map((index) => (
+          <BackgroundLayer key={index} index={index} opacity={0.12 - index * 0.03} />
+        ))}
 
-          {/* Logo 3D Phase */}
-          {phase === "logo3d" && (
+        {/* Subtle grid pattern */}
+        <div 
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)`,
+            backgroundSize: '60px 60px',
+          }}
+        />
+
+        {/* Optimized Particles */}
+        <div className="absolute inset-0">
+          {particles.map((particle) => (
             <motion.div
-              key="logo3d"
-              className="relative flex flex-col items-center justify-center"
-              initial={{ opacity: 0, scale: 0.8 }}
+              key={particle.id}
+              className="absolute rounded-full bg-gradient-to-r from-blue-400/20 to-cyan-400/10"
+              style={{
+                left: `${particle.x}%`,
+                top: `${particle.y}%`,
+                width: particle.size,
+                height: particle.size,
+              }}
+              animate={{
+                y: [0, -15, 0],
+                opacity: [0.2, 0.5, 0.2],
+              }}
+              transition={{
+                duration: particle.duration,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: particle.delay,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Smooth Phase Transitions */}
+        <AnimatePresence mode="wait">
+          {/* Logo Phase */}
+          {phase === "logo" && (
+            <motion.div
+              key="logo"
+              className="absolute inset-0 flex items-center justify-center"
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.2 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              style={{ transformStyle: "preserve-3d" }}
+              exit={{ 
+                opacity: 0, 
+                scale: 0.98,
+                transition: { 
+                  duration: 0.6, 
+                  ease: "easeInOut",
+                  opacity: { duration: 0.4 }
+                } 
+              }}
+              transition={{ 
+                duration: 0.7, 
+                ease: [0.43, 0.13, 0.23, 0.96] 
+              }}
+              style={{
+                x: floatingX,
+                y: floatingY,
+              }}
             >
-              {/* 3D Logo Container */}
+              {/* Glow effect behind logo */}
               <motion.div
-                className="relative"
+                className="absolute w-[380px] h-[380px] md:w-[500px] md:h-[500px] rounded-full"
+                style={{
+                  background: `radial-gradient(circle, rgba(0, 102, 255, 0.12) 0%, transparent 65%)`,
+                  filter: "blur(50px)",
+                }}
                 animate={{
-                  rotateY: [0, 10, -10, 0],
-                  rotateX: [0, 5, -5, 0],
+                  scale: [1, 1.08, 1],
+                  opacity: [0.25, 0.35, 0.25],
                 }}
                 transition={{
-                  duration: 8,
+                  duration: 3.5,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                {/* Glowing Orb behind logo */}
+              />
+
+              {/* Rotating rings */}
+              {[1, 2, 3].map((ring) => (
                 <motion.div
-                  className="absolute -inset-20 rounded-full blur-3xl"
-                  animate={{
-                    scale: [1, 1.1, 1],
-                    opacity: [0.3, 0.5, 0.3],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
+                  key={ring}
+                  className="absolute rounded-full border"
                   style={{
-                    background: "radial-gradient(circle, rgba(0, 102, 255, 0.6) 0%, rgba(0, 102, 255, 0.2) 40%, transparent 70%)",
+                    width: 180 + ring * 60,
+                    height: 180 + ring * 60,
+                    borderColor: `rgba(${100 - ring * 20}, ${150 + ring * 30}, 255, ${0.15 - ring * 0.04})`,
+                    borderWidth: '1px',
+                  }}
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    duration: 25 + ring * 12,
+                    repeat: Infinity,
+                    ease: "linear",
                   }}
                 />
+              ))}
 
-                {/* Animated Rings */}
-                {[...Array(3)].map((_, i) => (
-                  <motion.div
-                    key={`ring-${i}`}
-                    className="absolute rounded-full border"
-                    style={{
-                      width: 200 + i * 100,
-                      height: 200 + i * 100,
-                      borderColor: `rgba(0, ${150 + i * 50}, 255, ${0.2 - i * 0.05})`,
-                      top: "50%",
-                      left: "50%",
-                      marginTop: -(100 + i * 50),
-                      marginLeft: -(100 + i * 50),
-                    }}
-                    animate={{ rotateY: 360 }}
-                    transition={{
-                      duration: 20 + i * 5,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                  />
-                ))}
-
-                {/* Logo Container with Depth */}
-                <motion.div
-                  className="relative"
-                  style={{ transformStyle: "preserve-3d" }}
-                >
-                  {/* Logo Shadow/Depth Effect */}
-                  <motion.div
-                    className="absolute inset-0 rounded-2xl blur-xl"
-                    style={{
-                      background: "linear-gradient(135deg, rgba(0, 102, 255, 0.8) 0%, rgba(102, 0, 255, 0.6) 100%)",
-                      transform: "translateZ(-30px)",
-                    }}
-                    animate={{
-                      opacity: [0.3, 0.5, 0.3],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                  />
-
-                  {/* Main Logo Image */}
-                  <motion.div
-                    className="relative z-10"
-                    style={{ transformStyle: "preserve-3d" }}
-                    animate={{
-                      y: [0, -10, 0],
-                    }}
-                    transition={{
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                  >
-                    <motion.img
-                      src="https://a.top4top.io/p_3605ck8qd0.png"
-                      alt="X-Host Logo"
-                      className="w-64 h-64 object-contain"
-                      style={{
-                        filter: `
-                          drop-shadow(0 0 40px rgba(0, 102, 255, 0.8))
-                          drop-shadow(0 0 80px rgba(0, 102, 255, 0.4))
-                          drop-shadow(0 0 120px rgba(0, 102, 255, 0.2))
-                        `,
-                      }}
-                      animate={{
-                        filter: [
-                          "drop-shadow(0 0 40px rgba(0, 102, 255, 0.8)) drop-shadow(0 0 80px rgba(0, 102, 255, 0.4)) drop-shadow(0 0 120px rgba(0, 102, 255, 0.2))",
-                          "drop-shadow(0 0 60px rgba(0, 102, 255, 1)) drop-shadow(0 0 100px rgba(0, 102, 255, 0.6)) drop-shadow(0 0 140px rgba(0, 102, 255, 0.3))",
-                          "drop-shadow(0 0 40px rgba(0, 102, 255, 0.8)) drop-shadow(0 0 80px rgba(0, 102, 255, 0.4)) drop-shadow(0 0 120px rgba(0, 102, 255, 0.2))",
-                        ],
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
-                    />
-                  </motion.div>
-                </motion.div>
-              </motion.div>
-
-              {/* Brand Name with 3D Effect */}
+              {/* Logo container */}
               <motion.div
-                className="mt-12 text-center"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.5 }}
-                style={{ transformStyle: "preserve-3d" }}
+                className="relative z-10 flex flex-col items-center"
+                initial={{ scale: 0.85, opacity: 0, y: 15 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 120,
+                  damping: 18,
+                  delay: 0.1,
+                  duration: 0.8
+                }}
               >
+                {/* Logo with enhanced glow */}
+                <div className="relative">
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    animate={{
+                      boxShadow: [
+                        "0 0 50px rgba(0, 102, 255, 0.25)",
+                        "0 0 70px rgba(0, 102, 255, 0.4)",
+                        "0 0 50px rgba(0, 102, 255, 0.25)",
+                      ],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                  <motion.img
+                    src="https://a.top4top.io/p_3605ck8qd0.png"
+                    alt="X-Host Logo"
+                    className="relative w-32 h-32 md:w-44 md:h-44 lg:w-48 lg:h-48 object-contain"
+                    style={{
+                      filter: "drop-shadow(0 0 25px rgba(0, 102, 255, 0.35))",
+                    }}
+                    animate={{
+                      scale: [1, 1.015, 1],
+                    }}
+                    transition={{
+                      duration: 2.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                  />
+                </div>
+
+                {/* Brand name */}
                 <motion.h1
-                  className="text-6xl md:text-7xl font-bold tracking-tighter"
+                  className="mt-8 text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    delay: 0.3, 
+                    duration: 0.6,
+                    ease: "easeOut"
+                  }}
                   style={{
-                    background: "linear-gradient(135deg, #0066ff 0%, #33ccff 40%, #00ffcc 80%, #6600ff 100%)",
+                    background: "linear-gradient(135deg, #0066ff 0%, #33ccff 50%, #00ffcc 100%)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
-                    textShadow: "0 0 30px rgba(0, 102, 255, 0.5)",
-                  }}
-                  animate={{
-                    textShadow: [
-                      "0 0 30px rgba(0, 102, 255, 0.5)",
-                      "0 0 50px rgba(0, 102, 255, 0.8)",
-                      "0 0 30px rgba(0, 102, 255, 0.5)",
-                    ],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
                   }}
                 >
                   X-Host
                 </motion.h1>
+
+                {/* Tagline */}
                 <motion.p
-                  className="mt-4 text-lg text-cyan-300/80 tracking-widest uppercase font-light"
-                  animate={{
-                    opacity: [0.7, 1, 0.7],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
+                  className="mt-3 text-sm md:text-base text-slate-300/70 tracking-widest uppercase font-light"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ 
+                    delay: 0.5, 
+                    duration: 0.5 
                   }}
                 >
-                  Premium Hosting Solutions
+                  Digital Solutions
                 </motion.p>
               </motion.div>
-
-              {/* Floating tech elements */}
-              {[...Array(6)].map((_, i) => (
-                <motion.div
-                  key={`tech-${i}`}
-                  className="absolute w-2 h-2 rounded-full bg-gradient-to-r from-blue-400 to-cyan-400"
-                  style={{
-                    top: `${30 + Math.cos((i * Math.PI * 2) / 6) * 25}%`,
-                    left: `${50 + Math.sin((i * Math.PI * 2) / 6) * 25}%`,
-                  }}
-                  animate={{
-                    scale: [1, 1.8, 1],
-                    opacity: [0.4, 0.9, 0.4],
-                    y: [0, -10, 0],
-                  }}
-                  transition={{
-                    duration: 2,
-                    delay: i * 0.2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                />
-              ))}
             </motion.div>
           )}
 
           {/* Messages Phase */}
           {phase === "messages" && (
             <motion.div
-              key="messages"
-              className="absolute inset-0 flex items-center justify-center"
+              key={`message-container-${messageIndex}`}
+              className="absolute inset-0 flex items-center justify-center px-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
+              exit={{ 
+                opacity: 0,
+                transition: { duration: 0.4 }
+              }}
+              transition={{ 
+                duration: 0.5,
+                ease: "easeInOut" 
+              }}
             >
+              {/* Dynamic message background */}
+              <motion.div
+                className="absolute w-[90vw] max-w-[600px] h-[90vw] max-h-[600px] rounded-full"
+                style={{
+                  background: `radial-gradient(circle, rgba(0, 102, 255, 0.08) 0%, transparent 65%)`,
+                  filter: "blur(40px)",
+                }}
+                animate={{
+                  scale: [1, 1.03, 1],
+                  opacity: [0.08, 0.12, 0.08],
+                }}
+                transition={{
+                  duration: 2.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={messageIndex}
-                  className="text-center px-8 max-w-4xl"
-                  initial={{ opacity: 0, y: 40, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -40, scale: 0.9 }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  key={`message-${messageIndex}`}
+                  className="relative"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ 
+                    opacity: 0, 
+                    y: -10,
+                    transition: { duration: 0.3 }
+                  }}
+                  transition={{ 
+                    duration: 0.5,
+                    ease: "easeOut" 
+                  }}
                 >
-                  {/* Message background pulse */}
-                  <motion.div
-                    className="absolute inset-0 -z-10 rounded-full blur-3xl"
-                    animate={{
-                      scale: [1, 1.3, 1],
-                      opacity: [0.2, 0.4, 0.2],
-                    }}
-                    transition={{
-                      duration: 2.5,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
+                  <motion.h2
+                    className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-medium text-center leading-relaxed max-w-4xl px-4"
                     style={{
-                      background: "radial-gradient(circle, rgba(0, 102, 255, 0.4) 0%, transparent 70%)",
-                    }}
-                  />
-
-                  <h2
-                    className="text-4xl md:text-5xl lg:text-6xl font-bold leading-snug"
-                    style={{
-                      background: "linear-gradient(135deg, #0066ff 0%, #33ccff 40%, #00ffcc 80%)",
+                      background: "linear-gradient(135deg, #0066ff 0%, #33ccff 50%, #00ffcc 100%)",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
                       backgroundClip: "text",
-                      textShadow: "0 0 50px rgba(0, 102, 255, 0.4)",
                     }}
                   >
                     {messages[messageIndex]}
-                  </h2>
+                    <motion.div
+                      className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-32 h-px"
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ 
+                        duration: 0.6, 
+                        delay: 0.2,
+                        ease: "easeOut" 
+                      }}
+                      style={{
+                        background: "linear-gradient(90deg, transparent, rgba(0, 102, 255, 0.6), transparent)",
+                      }}
+                    />
+                  </motion.h2>
                 </motion.div>
               </AnimatePresence>
             </motion.div>
           )}
 
-          {/* Transition Phase - Camera Zoom Out */}
+          {/* Transition Phase with Enhanced Fade Effect */}
           {phase === "transition" && (
             <motion.div
               key="transition"
-              className="absolute inset-0 flex items-center justify-center"
-              initial={{ opacity: 1 }}
-              animate={{ opacity: 0 }}
-              transition={{ duration: 1 }}
+              className="absolute inset-0"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
             >
+              {/* Expanding portal effect */}
               <motion.div
-                className="absolute rounded-full"
+                className="absolute inset-0 flex items-center justify-center"
                 initial={{ scale: 0 }}
-                animate={{ scale: 50 }}
-                transition={{ duration: 1, ease: "easeIn" }}
-                style={{
-                  background: "radial-gradient(circle, white 0%, rgba(0, 102, 255, 0.8) 30%, transparent 70%)",
-                  boxShadow: "0 0 200px 100px rgba(255, 255, 255, 0.4)",
+                animate={{ scale: 1 }}
+                transition={{
+                  duration: 0.9,
+                  ease: [0.43, 0.13, 0.23, 0.96],
                 }}
-              />
+              >
+                {/* Multiple expanding rings */}
+                {[1, 2, 3].map((ring) => (
+                  <motion.div
+                    key={ring}
+                    className="absolute rounded-full border"
+                    style={{
+                      width: "100vmax",
+                      height: "100vmax",
+                      borderColor: `rgba(0, 102, 255, ${0.15 - ring * 0.04})`,
+                      borderWidth: '1px',
+                    }}
+                    initial={{ scale: 0, opacity: 0.8 }}
+                    animate={{ 
+                      scale: 3, 
+                      opacity: 0 
+                    }}
+                    transition={{
+                      duration: 0.8,
+                      delay: ring * 0.1,
+                      ease: "easeOut"
+                    }}
+                  />
+                ))}
+
+                {/* Center pulse effect */}
+                <motion.div
+                  className="absolute rounded-full bg-gradient-to-r from-blue-400/40 to-cyan-400/30"
+                  style={{ 
+                    width: "100px", 
+                    height: "100px",
+                    filter: "blur(30px)" 
+                  }}
+                  initial={{ scale: 0, opacity: 0.7 }}
+                  animate={{ 
+                    scale: 40, 
+                    opacity: 0 
+                  }}
+                  transition={{
+                    duration: 0.9,
+                    ease: "easeOut"
+                  }}
+                />
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Progress Indicator */}
+        {phase !== "transition" && phase !== "complete" && (
+          <motion.div 
+            className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <div className="flex items-center gap-3">
+              {[1, 2, 3].map((dot) => (
+                <motion.div
+                  key={dot}
+                  className={`w-2 h-2 rounded-full ${
+                    (phase === "logo" && dot === 1) ||
+                    (phase === "messages" && dot <= messageIndex + 1)
+                      ? "bg-gradient-to-r from-blue-400 to-cyan-400"
+                      : "bg-slate-600"
+                  }`}
+                  animate={{
+                    scale:
+                      (phase === "logo" && dot === 1) ||
+                      (phase === "messages" && dot === messageIndex + 1)
+                        ? [1, 1.3, 1]
+                        : 1,
+                    opacity:
+                      (phase === "logo" && dot === 1) ||
+                      (phase === "messages" && dot <= messageIndex + 1)
+                        ? 1
+                        : 0.4,
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: dot * 0.1,
+                  }}
+                />
+              ))}
+            </div>
+            <motion.p
+              className="text-xs text-slate-400/80 mt-3 text-center tracking-wide font-light"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              {phase === "logo" ? "جاري التهيئة..." : "جاري التحميل..."}
+            </motion.p>
+          </motion.div>
+        )}
       </motion.div>
-
-      {/* Cinematic Frame Counter (Optional) */}
-      <div className="absolute bottom-4 right-4 text-xs text-white/30 font-mono tracking-wider">
-        24FPS
-      </div>
-
-      {/* Progress Indicator */}
-      <div className="absolute bottom-16 left-1/2 -translate-x-1/2">
-        <div className="h-1 w-64 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
-          <motion.div
-            className="h-full rounded-full"
-            initial={{ width: "0%" }}
-            animate={{
-              width: phase === "entrance" ? "15%" :
-                     phase === "logo3d" ? "45%" :
-                     phase === "messages" ? `${45 + (messageIndex + 1) * 18}%` :
-                     phase === "transition" ? "100%" : "100%"
-            }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            style={{
-              background: "linear-gradient(90deg, #0066ff, #33ccff, #00ffcc, #6600ff)",
-            }}
-          />
-        </div>
-        <motion.p 
-          className="text-center text-xs text-cyan-300/60 mt-2 tracking-wider"
-          animate={{ opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          {phase === "entrance" ? "جاري التهيئة..." :
-           phase === "logo3d" ? "تحميل الكون الرقمي..." :
-           phase === "messages" ? `الرسالة ${messageIndex + 1} من 3` :
-           "جاري الانتقال..."}
-        </motion.p>
-      </div>
-    </div>
+    </>
   )
-              }
+}
