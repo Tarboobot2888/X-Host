@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, ShoppingCart, User, Home, Package, CreditCard, Users, Phone } from "lucide-react"
+import { Menu, X, User, Home, Package, CreditCard, Users, Phone } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 
 const navItems = [
   { ar: "الرئيسية", href: "/", icon: <Home className="w-4 h-4" /> },
@@ -16,8 +17,6 @@ const navItems = [
 export function CosmicNavbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [cartCount, setCartCount] = useState(0)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,45 +50,6 @@ export function CosmicNavbar() {
     return () => document.removeEventListener("keydown", handleEscape)
   }, [mobileMenuOpen])
 
-  // Listen to cart updates from localStorage
-  useEffect(() => {
-    const updateCartCount = () => {
-      try {
-        const cart = localStorage.getItem("xhost-cart")
-        if (cart) {
-          const cartItems = JSON.parse(cart)
-          setCartCount(cartItems.length || 0)
-        }
-      } catch (error) {
-        console.error("Error reading cart:", error)
-      }
-    }
-
-    // Initial update
-    updateCartCount()
-
-    // Listen for custom cart update event
-    const handleCartUpdate = () => {
-      updateCartCount()
-    }
-
-    window.addEventListener("cart-updated", handleCartUpdate)
-
-    // Poll for changes (fallback)
-    const interval = setInterval(updateCartCount, 1000)
-
-    return () => {
-      window.removeEventListener("cart-updated", handleCartUpdate)
-      clearInterval(interval)
-    }
-  }, [])
-
-  const handleCartClick = () => {
-    // Dispatch event to open cart sidebar from StoreWizard
-    const event = new CustomEvent("open-cart-sidebar")
-    window.dispatchEvent(event)
-  }
-
   return (
     <>
       <motion.nav
@@ -108,20 +68,24 @@ export function CosmicNavbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 group">
-              <motion.div whileHover={{ scale: 1.1, rotate: 5 }} whileTap={{ scale: 0.95 }} className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl blur-lg opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
-                <div className="relative w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/40 rounded-xl flex items-center justify-center shadow-xl">
-                  <span className="text-xl font-bold bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent animate-gradient-x">
-                    XH
-                  </span>
-                  <div className="absolute inset-0 rounded-xl border border-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <Link href="/" className="flex items-center gap-2 group">
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+                <div className="relative flex items-center justify-center p-1">
+                  <div className="relative w-40 h-12 lg:w-48 lg:h-14 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-transparent to-cyan-600/10 rounded-lg blur-sm"></div>
+                    <Image
+                      src="https://a.top4top.io/p_3605ck8qd0.png"
+                      alt="X-Host Logo"
+                      width={192}
+                      height={56}
+                      className="w-auto h-10 lg:h-12 object-contain drop-shadow-lg"
+                      priority
+                    />
+                  </div>
+                  <div className="absolute inset-0 rounded-lg border border-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
               </motion.div>
-              <div className="flex flex-col">
-                <span className="text-lg font-bold text-slate-100 tracking-tight">X-Host</span>
-                <span className="text-xs text-slate-400 tracking-wide font-medium">Premium Hosting</span>
-              </div>
             </Link>
 
             {/* Desktop Navigation */}
@@ -144,26 +108,6 @@ export function CosmicNavbar() {
 
             {/* Desktop Actions */}
             <div className="hidden lg:flex items-center gap-3">
-              {/* Cart Button with Count */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleCartClick}
-                className="relative p-3 rounded-xl bg-gradient-to-b from-slate-800/30 to-slate-900/20 border border-slate-700/40 hover:border-blue-500/40 transition-all duration-300 group"
-              >
-                <ShoppingCart className="w-5 h-5 text-slate-300 group-hover:text-blue-400 transition-colors duration-300" />
-                {cartCount > 0 && (
-                  <motion.span
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 min-w-5 h-5 px-1.5 flex items-center justify-center bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold rounded-full border border-red-400/30 shadow-lg"
-                  >
-                    {cartCount > 99 ? "99+" : cartCount}
-                  </motion.span>
-                )}
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </motion.button>
-
               {/* User Dashboard */}
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="group">
                 <Link
@@ -199,20 +143,6 @@ export function CosmicNavbar() {
 
             {/* Mobile Menu Button */}
             <div className="lg:hidden flex items-center gap-3 mobile-menu">
-              {/* Cart - Mobile */}
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={handleCartClick}
-                className="relative p-3 rounded-xl bg-gradient-to-b from-slate-800/30 to-slate-900/20 border border-slate-700/40 hover:border-blue-500/40 transition-all duration-300"
-              >
-                <ShoppingCart className="w-5 h-5 text-slate-300" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold rounded-full border border-red-400/30 flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </motion.button>
-
               {/* Menu Toggle */}
               <motion.button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -322,18 +252,14 @@ export function CosmicNavbar() {
                     </motion.div>
 
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
-                      <button
-                        onClick={handleCartClick}
+                      <Link
+                        href="/services"
                         className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium bg-gradient-to-b from-slate-800/40 to-slate-900/30 text-slate-300 border border-slate-700/40 hover:border-blue-500/40 rounded-xl transition-all duration-200 w-full"
+                        onClick={() => setMobileMenuOpen(false)}
                       >
-                        <ShoppingCart className="w-4 h-4" />
-                        سلة المشتريات
-                        {cartCount > 0 && (
-                          <span className="w-5 h-5 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                            {cartCount}
-                          </span>
-                        )}
-                      </button>
+                        <Package className="w-4 h-4" />
+                        الخدمات
+                      </Link>
                     </motion.div>
                   </div>
                 </div>
