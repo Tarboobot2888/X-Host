@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X, User, Home, Package, CreditCard, Users, Phone, Globe, Server, Shield, Settings } from "lucide-react"
+import { Menu, X, User, Home, Package, CreditCard, Users, Phone } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 
@@ -70,33 +70,26 @@ export function CosmicNavbar() {
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-3 group">
-              <motion.div 
-                whileHover={{ scale: 1.05 }} 
-                whileTap={{ scale: 0.95 }} 
-                className="relative"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg blur-lg opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
-                <div className="relative w-40 h-12 rounded-lg overflow-hidden">
-                  {/* Using a placeholder for the logo - replace with actual Image component */}
-                  <div className="w-full h-full relative">
-                    {/* This is a placeholder - replace with actual Image component */}
-                    <div className="w-full h-full bg-gradient-to-r from-blue-500/10 to-cyan-500/10 flex items-center justify-center">
-                      <div className="text-xl font-bold bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
-                        لوجو الشركة
-                      </div>
-                    </div>
-                    {/* Replace the above div with: */}
-                    {/* <Image 
-                      src="https://a.top4top.io/p_3605ck8qd0.png" 
-                      alt="Logo" 
+              <motion.div whileHover={{ scale: 1.1, rotate: 5 }} whileTap={{ scale: 0.95 }} className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl blur-lg opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+                <div className="relative w-12 h-12 bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/40 rounded-xl flex items-center justify-center shadow-xl overflow-hidden">
+                  {/* Logo Image */}
+                  <div className="relative w-10 h-10">
+                    <Image
+                      src="https://a.top4top.io/p_3605ck8qd0.png"
+                      alt="Logo"
                       fill
-                      className="object-contain"
-                      sizes="(max-width: 768px) 100px, 160px"
-                    /> */}
+                      className="object-contain p-1"
+                      sizes="(max-width: 48px) 100vw, 48px"
+                    />
                   </div>
-                  <div className="absolute inset-0 rounded-lg border border-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 rounded-xl border border-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
               </motion.div>
+              <div className="flex flex-col">
+                <span className="text-lg font-bold text-slate-100 tracking-tight">HostX</span>
+                <span className="text-xs text-slate-400 tracking-wide font-medium">Premium Hosting</span>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
@@ -118,37 +111,7 @@ export function CosmicNavbar() {
             </div>
 
             {/* Desktop Actions */}
-            <div className="hidden lg:flex items-center gap-4">
-              {/* Features Icons */}
-              <div className="flex items-center gap-2 border-r border-slate-700/40 pr-4">
-                <motion.div 
-                  whileHover={{ scale: 1.1, y: -2 }} 
-                  className="group relative p-2"
-                  title="خوادم سحابية"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <Server className="w-5 h-5 text-cyan-400/70 group-hover:text-cyan-300" />
-                </motion.div>
-                
-                <motion.div 
-                  whileHover={{ scale: 1.1, y: -2 }} 
-                  className="group relative p-2"
-                  title="أمان عالي"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <Shield className="w-5 h-5 text-blue-400/70 group-hover:text-blue-300" />
-                </motion.div>
-                
-                <motion.div 
-                  whileHover={{ scale: 1.1, y: -2 }} 
-                  className="group relative p-2"
-                  title="دعم عالمي"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <Globe className="w-5 h-5 text-slate-300 group-hover:text-white" />
-                </motion.div>
-              </div>
-
+            <div className="hidden lg:flex items-center gap-3">
               {/* User Dashboard */}
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="group">
                 <Link
@@ -156,7 +119,7 @@ export function CosmicNavbar() {
                   target="_blank"
                   className="px-5 py-2.5 text-sm font-medium text-slate-300 hover:text-white transition-colors duration-200 rounded-xl bg-gradient-to-b from-slate-800/30 to-slate-900/20 border border-slate-700/40 hover:border-blue-500/40 flex items-center gap-2"
                 >
-                  <Settings className="w-4 h-4 text-blue-500/60 group-hover:text-blue-400 transition-colors duration-300" />
+                  <User className="w-4 h-4 text-blue-500/60 group-hover:text-blue-400 transition-colors duration-300" />
                   لوحة التحكم
                 </Link>
               </motion.div>
@@ -169,7 +132,14 @@ export function CosmicNavbar() {
                   className="px-6 py-2.5 text-sm font-medium bg-gradient-to-r from-blue-600/90 via-blue-500/90 to-cyan-600/90 text-white rounded-xl hover:shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 flex items-center gap-2 relative overflow-hidden"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <User className="w-4 h-4 relative z-10" />
+                  <svg className="w-4 h-4 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                    />
+                  </svg>
                   <span className="relative z-10">تسجيل دخول</span>
                 </Link>
               </motion.div>
@@ -177,12 +147,6 @@ export function CosmicNavbar() {
 
             {/* Mobile Menu Button */}
             <div className="lg:hidden flex items-center gap-3 mobile-menu">
-              {/* Features Icons - Mobile */}
-              <div className="flex items-center gap-1">
-                <Server className="w-4 h-4 text-cyan-400/60" />
-                <Shield className="w-4 h-4 text-blue-400/60" />
-              </div>
-
               {/* Menu Toggle */}
               <motion.button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -232,32 +196,19 @@ export function CosmicNavbar() {
             >
               {/* Glass Container */}
               <div className="bg-gradient-to-b from-slate-800/95 via-slate-900/95 to-slate-950/95 backdrop-blur-xl rounded-2xl border border-slate-700/40 shadow-2xl overflow-hidden">
-                {/* Company Features */}
-                <div className="p-4 border-b border-slate-700/40">
-                  <div className="grid grid-cols-3 gap-2">
-                    <motion.div 
-                      whileHover={{ scale: 1.05 }}
-                      className="flex flex-col items-center p-3 rounded-lg bg-gradient-to-b from-slate-800/40 to-slate-900/20 border border-slate-700/30"
+                {/* User Info */}
+                <div className="p-5 border-b border-slate-700/40 bg-gradient-to-r from-slate-800/50 to-slate-900/50">
+                  <div className="flex items-center gap-4">
+                    <motion.div
+                      whileHover={{ rotate: 10, scale: 1.1 }}
+                      className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-500/30 flex items-center justify-center"
                     >
-                      <Server className="w-5 h-5 text-cyan-400 mb-1" />
-                      <span className="text-xs text-slate-300">سحابي</span>
+                      <User className="w-6 h-6 text-blue-400" />
                     </motion.div>
-                    
-                    <motion.div 
-                      whileHover={{ scale: 1.05 }}
-                      className="flex flex-col items-center p-3 rounded-lg bg-gradient-to-b from-slate-800/40 to-slate-900/20 border border-slate-700/30"
-                    >
-                      <Shield className="w-5 h-5 text-blue-400 mb-1" />
-                      <span className="text-xs text-slate-300">آمن</span>
-                    </motion.div>
-                    
-                    <motion.div 
-                      whileHover={{ scale: 1.05 }}
-                      className="flex flex-col items-center p-3 rounded-lg bg-gradient-to-b from-slate-800/40 to-slate-900/20 border border-slate-700/30"
-                    >
-                      <Globe className="w-5 h-5 text-slate-300 mb-1" />
-                      <span className="text-xs text-slate-300">عالمي</span>
-                    </motion.div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-100">مرحباً بك!</p>
+                      <p className="text-xs text-slate-400 mt-1">قم بتسجيل الدخول للوصول إلى حسابك</p>
+                    </div>
                   </div>
                 </div>
 
@@ -277,11 +228,6 @@ export function CosmicNavbar() {
                       >
                         <div className="text-blue-500/60">{item.icon}</div>
                         <span>{item.ar}</span>
-                        <div className="mr-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </div>
                       </Link>
                     </motion.div>
                   ))}
@@ -289,21 +235,34 @@ export function CosmicNavbar() {
 
                 {/* Quick Actions */}
                 <div className="p-4 border-t border-slate-700/40">
-                  <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-3">
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
                       <Link
                         href="https://x-host.cloud/home"
                         target="_blank"
-                        className="flex items-center justify-between px-4 py-3 text-sm font-medium bg-gradient-to-b from-slate-800/40 to-slate-900/30 text-slate-300 border border-slate-700/40 hover:border-blue-500/40 rounded-xl transition-all duration-200"
+                        className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium bg-gradient-to-b from-slate-800/40 to-slate-900/30 text-slate-300 border border-slate-700/40 hover:border-blue-500/40 rounded-xl transition-all duration-200"
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        <div className="flex items-center gap-2">
-                          <Settings className="w-4 h-4" />
-                          لوحة التحكم
-                        </div>
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                          />
                         </svg>
+                        لوحة التحكم
+                      </Link>
+                    </motion.div>
+
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}>
+                      <Link
+                        href="/contact"
+                        className="flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium bg-gradient-to-b from-slate-800/40 to-slate-900/30 text-slate-300 border border-slate-700/40 hover:border-blue-500/40 rounded-xl transition-all duration-200 w-full"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Phone className="w-4 h-4" />
+                        الدعم الفني
                       </Link>
                     </motion.div>
                   </div>
@@ -323,7 +282,14 @@ export function CosmicNavbar() {
                       className="flex items-center justify-center gap-2 px-4 py-3.5 text-sm font-medium bg-gradient-to-r from-blue-600/90 via-blue-500/90 to-cyan-600/90 text-white rounded-xl hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      <User className="w-4 h-4" />
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                        />
+                      </svg>
                       تسجيل دخول
                     </Link>
 
