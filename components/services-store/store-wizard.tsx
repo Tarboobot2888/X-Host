@@ -20,7 +20,8 @@ interface Selection {
 // SVG Icons Components
 const DevStackIcon = () => (
   <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
   </svg>
 )
 
@@ -193,7 +194,7 @@ export const StoreWizard: FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950">
       <CartSidebar isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
       <div className={`transition-all duration-500 ${cartOpen ? "lg:mr-96" : ""}`}>
@@ -213,22 +214,22 @@ export const StoreWizard: FC = () => {
                 className="inline-flex items-center gap-4 mb-8"
               >
                 <div className="w-20 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
-                <span className="text-blue-400 font-semibold tracking-widest text-sm uppercase">XHOST Store</span>
+                <span className="text-blue-400 font-semibold tracking-widest text-sm uppercase">مركز الخدمات</span>
                 <div className="w-20 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
               </motion.div>
               
-              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500">
-                Service Wizard
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-8 text-slate-100">
+                معالج <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">الخدمات</span>
               </h1>
               
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-10 leading-relaxed">
+              <p className="text-xl text-slate-300 max-w-3xl mx-auto mb-10 leading-relaxed">
                 اختر خدمات الاستضافة المتكاملة التي تناسب مشروعك عبر واجهة متطورة وسلسة
               </p>
             </div>
 
             {/* Progress Steps */}
             <div className="relative mb-16">
-              <div className="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-gray-800/30 via-gray-700/20 to-gray-800/30 transform -translate-y-1/2"></div>
+              <div className="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-slate-800/30 via-slate-700/20 to-slate-800/30 transform -translate-y-1/2"></div>
               
               <div className="relative flex justify-between items-center">
                 {["category", "type", "plan", "review"].map((s, idx) => {
@@ -241,25 +242,25 @@ export const StoreWizard: FC = () => {
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: idx * 0.1, duration: 0.4 }}
-                        className={`w-20 h-20 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 backdrop-blur-sm ${
+                        className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-300 backdrop-blur-sm ${
                           isActive
-                            ? "bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border-2 border-blue-400/50 shadow-2xl shadow-blue-500/30"
+                            ? "bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border-2 border-blue-400/50 shadow-lg shadow-blue-500/20"
                             : isCompleted
                             ? "bg-gradient-to-r from-emerald-500/10 to-green-500/10 border border-emerald-400/30"
-                            : "bg-gray-800/30 border border-gray-700/50"
+                            : "bg-slate-800/30 border border-slate-700/50"
                         }`}
                       >
                         {isCompleted ? (
                           <motion.div
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
-                            className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-500 to-green-500 flex items-center justify-center"
+                            className="w-8 h-8 rounded-full bg-gradient-to-r from-emerald-500 to-green-500 flex items-center justify-center"
                           >
                             <CheckIcon />
                           </motion.div>
                         ) : (
-                          <span className={`text-xl font-bold ${
-                            isActive ? "text-blue-300" : "text-gray-400"
+                          <span className={`text-lg font-bold ${
+                            isActive ? "text-blue-300" : "text-slate-400"
                           }`}>
                             {idx + 1}
                           </span>
@@ -267,7 +268,7 @@ export const StoreWizard: FC = () => {
                       </motion.div>
                       
                       <span className={`text-sm font-medium ${
-                        isActive ? "text-blue-400" : isCompleted ? "text-emerald-400" : "text-gray-500"
+                        isActive ? "text-blue-400" : isCompleted ? "text-emerald-400" : "text-slate-500"
                       }`}>
                         {s === "category" && "الفئة"}
                         {s === "type" && "نوع الخدمة"}
@@ -336,7 +337,7 @@ export const StoreWizard: FC = () => {
                     else if (step === "plan") setStep("type")
                     else if (step === "review") setStep("plan")
                   }}
-                  className="flex items-center gap-3 px-8 py-3.5 bg-gray-800/40 text-gray-300 rounded-xl font-semibold border border-gray-700/50 hover:border-gray-600 hover:text-white transition-all duration-300 backdrop-blur-sm"
+                  className="flex items-center gap-3 px-6 py-3 bg-gradient-to-b from-slate-800/30 to-slate-900/20 text-slate-300 rounded-lg font-medium border border-slate-700/30 hover:border-slate-600/50 hover:text-white transition-all duration-300"
                 >
                   <ChevronRightIcon className="rotate-180" />
                   <span>العودة</span>
@@ -349,7 +350,7 @@ export const StoreWizard: FC = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setCartOpen(true)}
-                className="flex items-center gap-3 px-8 py-3.5 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-400 rounded-xl font-semibold border border-blue-500/30 hover:border-blue-400/50 hover:text-blue-300 transition-all duration-300 backdrop-blur-sm"
+                className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 text-blue-400 rounded-lg font-medium border border-blue-500/30 hover:border-blue-400/50 hover:text-blue-300 transition-all duration-300"
               >
                 <span>عرض السلة</span>
                 <ChevronRightIcon />
@@ -369,13 +370,13 @@ export const StoreWizard: FC = () => {
             transition={{ type: "spring", damping: 25 }}
             className="fixed bottom-6 right-6 z-50"
           >
-            <div className="px-6 py-4 bg-gradient-to-r from-emerald-500/90 to-green-500/90 backdrop-blur-sm text-white rounded-xl shadow-2xl shadow-emerald-500/30">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+            <div className="px-6 py-4 bg-gradient-to-r from-emerald-500/90 to-green-500/90 backdrop-blur-sm text-white rounded-xl shadow-lg shadow-emerald-500/30">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                   <CheckIcon />
                 </div>
                 <div>
-                  <p className="font-bold text-lg">{toastMessage}</p>
+                  <p className="font-bold text-base">{toastMessage}</p>
                   <p className="text-sm opacity-90 mt-1">تم حفظ اختيارك في سلة التسوق</p>
                 </div>
               </div>
@@ -398,52 +399,50 @@ function CategoryStep({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -30 }}
+      exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="text-center mb-16">
-        <h2 className="text-4xl font-bold text-white mb-6">
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-bold text-slate-100 mb-6">
           اختر <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">الفئة</span>
         </h2>
-        <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+        <p className="text-lg text-slate-400 max-w-2xl mx-auto">
           ابدأ باختيار الفئة المناسبة لاحتياجات مشروعك من مجموعتنا المتخصصة
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {categories.map((category, idx) => (
           <motion.button
             key={category.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1, duration: 0.4 }}
-            whileHover={{ scale: 1.05, y: -8 }}
+            whileHover={{ scale: 1.02, y: -4 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => onSelect(category.id)}
-            className="group relative p-8 bg-gradient-to-b from-gray-800/20 to-gray-900/10 border border-gray-700/30 rounded-2xl text-center hover:border-blue-500/40 transition-all duration-500 backdrop-blur-sm overflow-hidden"
+            className="group p-6 bg-gradient-to-b from-slate-800/10 to-slate-900/5 border border-slate-700/30 rounded-xl text-center hover:border-blue-500/40 transition-all duration-300"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            
-            <div className="relative mb-8">
-              <div className="inline-flex items-center justify-center w-24 h-24 rounded-2xl bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+            <div className="mb-6">
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-xl bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 group-hover:scale-105 group-hover:rotate-3 transition-all duration-300">
                 <div className="text-blue-400 group-hover:text-cyan-300 transition-colors duration-300">
                   {getIcon(category.id)}
                 </div>
               </div>
             </div>
             
-            <div className="relative">
-              <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-blue-400 transition-colors duration-300">
+            <div>
+              <h3 className="text-xl font-semibold text-slate-100 mb-3 group-hover:text-blue-400 transition-colors duration-300">
                 {category.name}
               </h3>
-              <p className="text-gray-400 text-sm leading-relaxed mb-6">{category.description}</p>
+              <p className="text-slate-400 text-sm leading-relaxed mb-6">{category.description}</p>
               
-              <div className="pt-6 border-t border-gray-700/30 group-hover:border-blue-500/30 transition-colors duration-300">
-                <div className="inline-flex items-center gap-3 text-blue-400 font-semibold group-hover:text-cyan-300 transition-colors duration-300">
+              <div className="pt-6 border-t border-slate-700/30 group-hover:border-blue-500/30 transition-colors duration-300">
+                <div className="inline-flex items-center gap-2 text-blue-400 font-medium text-sm group-hover:text-cyan-300 transition-colors duration-300">
                   <span>استعرض الخدمات</span>
-                  <ChevronRightIcon className="group-hover:translate-x-2 transition-transform duration-300" />
+                  <ChevronRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                 </div>
               </div>
             </div>
@@ -465,47 +464,47 @@ function TypeStep({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -30 }}
+      exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="text-center mb-16">
-        <h2 className="text-4xl font-bold text-white mb-6">
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-bold text-slate-100 mb-6">
           حدد <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">نوع الخدمة</span>
         </h2>
-        <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+        <p className="text-lg text-slate-400 max-w-2xl mx-auto">
           اختر نوع الخدمة الدقيقة التي تناسب متطلباتك التقنية
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {serviceTypes.map((type, idx) => (
           <motion.button
             key={type.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1, duration: 0.4 }}
-            whileHover={{ scale: 1.03, y: -4 }}
+            whileHover={{ scale: 1.02, y: -4 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => onSelect(type.id)}
-            className="group p-8 bg-gradient-to-b from-gray-800/20 to-gray-900/10 border border-gray-700/30 rounded-xl text-center hover:border-blue-500/40 transition-all duration-300 backdrop-blur-sm"
+            className="group p-6 bg-gradient-to-b from-slate-800/10 to-slate-900/5 border border-slate-700/30 rounded-xl text-center hover:border-blue-500/40 transition-all duration-300"
           >
             <div className="mb-6">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-xl bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-lg bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 group-hover:scale-105 group-hover:rotate-3 transition-all duration-300">
                 <div className="text-blue-400 group-hover:text-cyan-300 transition-colors duration-300">
                   {getIcon(type.id)}
                 </div>
               </div>
             </div>
             
-            <h3 className="text-xl font-bold text-white mb-4 group-hover:text-blue-400 transition-colors duration-300">
+            <h3 className="text-lg font-semibold text-slate-100 mb-3 group-hover:text-blue-400 transition-colors duration-300">
               {type.name}
             </h3>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6">{type.description}</p>
+            <p className="text-slate-400 text-sm leading-relaxed mb-6">{type.description}</p>
             
-            <div className="pt-6 border-t border-gray-700/30 group-hover:border-blue-500/30 transition-colors duration-300">
-              <div className="inline-flex items-center gap-2 text-blue-400 font-semibold text-sm group-hover:text-cyan-300 transition-colors duration-300">
+            <div className="pt-6 border-t border-slate-700/30 group-hover:border-blue-500/30 transition-colors duration-300">
+              <div className="inline-flex items-center gap-2 text-blue-400 font-medium text-sm group-hover:text-cyan-300 transition-colors duration-300">
                 <span>اختيار</span>
                 <ChevronRightIcon className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
               </div>
@@ -539,21 +538,21 @@ function PlanStep({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -30 }}
+      exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="text-center mb-16">
-        <h2 className="text-4xl font-bold text-white mb-6">
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-bold text-slate-100 mb-6">
           اختر <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">الباقة</span>
         </h2>
-        <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+        <p className="text-lg text-slate-400 max-w-2xl mx-auto">
           قارن بين الباقات واختر الأنسب من حيث المواصفات والسعر
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {relevantPlans.map((plan, idx) => {
           const isHighlighted = plan.highlighted
           
@@ -563,70 +562,68 @@ function PlanStep({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1, duration: 0.4 }}
-              whileHover={{ scale: isHighlighted ? 1.08 : 1.03, y: isHighlighted ? -12 : -6 }}
+              whileHover={{ scale: isHighlighted ? 1.05 : 1.02, y: isHighlighted ? -8 : -4 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => onSelect(plan.id)}
-              className={`group relative p-8 bg-gradient-to-b from-gray-800/20 to-gray-900/10 border rounded-2xl text-right transition-all duration-500 backdrop-blur-sm overflow-hidden ${
+              className={`group relative p-6 bg-gradient-to-b from-slate-800/10 to-slate-900/5 border rounded-xl transition-all duration-300 ${
                 isHighlighted
-                  ? "border-blue-400/50 shadow-2xl shadow-blue-500/30"
-                  : "border-gray-700/30 hover:border-blue-500/40"
+                  ? "border-blue-500/40 shadow-lg shadow-blue-500/20"
+                  : "border-slate-700/30 hover:border-blue-500/40"
               }`}
             >
               {isHighlighted && (
-                <div className="absolute -top-3 right-1/2 transform translate-x-1/2 z-20">
-                  <div className="px-6 py-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-sm font-bold rounded-full shadow-2xl">
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-20">
+                  <div className="px-4 py-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs font-semibold rounded-full shadow-lg">
                     الأكثر طلباً
                   </div>
                 </div>
               )}
 
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-              <div className="relative">
-                <div className="flex justify-between items-start mb-8">
-                  <div className="text-left">
-                    <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+              <div className="mb-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div className="text-right">
+                    <h3 className="text-lg font-semibold text-slate-100 group-hover:text-blue-400 transition-colors duration-300">
                       {plan.name}
                     </h3>
-                    <div className="text-sm text-gray-500 mt-2">
+                    <div className="text-xs text-slate-500 mt-1">
                       {plan.billing === "weekly" ? "باقة أسبوعية" : "باقة شهرية"}
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">
+                  <div className="text-left">
+                    <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">
                       {plan.price} EGP
                     </div>
-                    <div className="text-sm text-gray-400 mt-1">
+                    <div className="text-xs text-slate-400 mt-1">
                       {plan.billing === "weekly" ? "للأسبوع" : "للشهر"}
                     </div>
                   </div>
                 </div>
 
-                <div className="space-y-4 mb-8">
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-b from-gray-800/30 to-gray-900/20 border border-gray-700/30 rounded-xl group-hover:border-blue-500/30 transition-colors duration-300">
-                    <span className="text-sm text-gray-400">المعالج</span>
-                    <span className="text-sm font-semibold text-white">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-gradient-to-b from-slate-800/20 to-slate-900/10 border border-slate-700/20 rounded-lg group-hover:border-blue-500/30 transition-colors duration-300">
+                    <span className="text-xs text-slate-400">المعالج</span>
+                    <span className="text-xs font-medium text-slate-100">
                       {typeof plan.cpu === "string" ? plan.cpu : plan.cpu + " vCores"}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-b from-gray-800/30 to-gray-900/20 border border-gray-700/30 rounded-xl group-hover:border-blue-500/30 transition-colors duration-300">
-                    <span className="text-sm text-gray-400">الذاكرة</span>
-                    <span className="text-sm font-semibold text-white">{plan.ram} MB</span>
+                  <div className="flex items-center justify-between p-3 bg-gradient-to-b from-slate-800/20 to-slate-900/10 border border-slate-700/20 rounded-lg group-hover:border-blue-500/30 transition-colors duration-300">
+                    <span className="text-xs text-slate-400">الذاكرة</span>
+                    <span className="text-xs font-medium text-slate-100">{plan.ram} MB</span>
                   </div>
-                  <div className="flex items-center justify-between p-4 bg-gradient-to-b from-gray-800/30 to-gray-900/20 border border-gray-700/30 rounded-xl group-hover:border-blue-500/30 transition-colors duration-300">
-                    <span className="text-sm text-gray-400">التخزين</span>
-                    <span className="text-sm font-semibold text-white">{plan.disk} MB</span>
+                  <div className="flex items-center justify-between p-3 bg-gradient-to-b from-slate-800/20 to-slate-900/10 border border-slate-700/20 rounded-lg group-hover:border-blue-500/30 transition-colors duration-300">
+                    <span className="text-xs text-slate-400">التخزين</span>
+                    <span className="text-xs font-medium text-slate-100">{plan.disk} MB</span>
                   </div>
                 </div>
+              </div>
 
-                <div className="pt-6 border-t border-gray-700/30 group-hover:border-blue-500/30 transition-colors duration-300">
-                  <div className={`px-6 py-3 rounded-xl text-center text-sm font-semibold transition-all duration-300 ${
-                    isHighlighted
-                      ? "bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-400 group-hover:text-cyan-300"
-                      : "bg-gradient-to-b from-gray-800/30 to-gray-900/20 text-gray-300 group-hover:text-blue-400"
-                  }`}>
-                    اختيار هذه الباقة
-                  </div>
+              <div className="pt-6 border-t border-slate-700/30 group-hover:border-blue-500/30 transition-colors duration-300">
+                <div className={`px-4 py-2 rounded-lg text-center text-xs font-medium transition-all duration-300 ${
+                  isHighlighted
+                    ? "bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-blue-400 group-hover:text-cyan-300"
+                    : "bg-gradient-to-b from-slate-800/20 to-slate-900/10 text-slate-300 group-hover:text-blue-400"
+                }`}>
+                  اختيار هذه الباقة
                 </div>
               </div>
             </motion.button>
@@ -656,72 +653,72 @@ function ReviewStep({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -30 }}
+      exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="text-center mb-16">
-        <h2 className="text-4xl font-bold text-white mb-6">
+      <div className="text-center mb-12">
+        <h2 className="text-3xl font-bold text-slate-100 mb-6">
           تأكيد <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">الطلبية</span>
         </h2>
-        <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+        <p className="text-lg text-slate-400 max-w-2xl mx-auto">
           راجع تفاصيل طلبيتك قبل إضافتها إلى سلة التسوق
         </p>
       </div>
 
       <div className="max-w-4xl mx-auto">
-        <div className="p-10 bg-gradient-to-b from-gray-800/20 to-gray-900/10 border border-gray-700/30 rounded-3xl backdrop-blur-sm">
+        <div className="p-8 bg-gradient-to-b from-slate-800/10 to-slate-900/5 border border-slate-700/30 rounded-2xl">
           {/* Selection Summary */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            <div className="p-8 bg-gradient-to-b from-gray-800/20 to-gray-900/10 border border-gray-700/30 rounded-2xl">
-              <div className="text-sm text-gray-400 mb-4 uppercase tracking-wider">الفئة المختارة</div>
-              <div className="text-2xl font-bold text-white mb-3">{category?.name}</div>
-              <div className="text-gray-500 text-sm leading-relaxed">{category?.description}</div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+            <div className="p-6 bg-gradient-to-b from-slate-800/10 to-slate-900/5 border border-slate-700/30 rounded-xl">
+              <div className="text-xs text-slate-400 mb-3 uppercase tracking-wider">الفئة المختارة</div>
+              <div className="text-xl font-semibold text-slate-100 mb-2">{category?.name}</div>
+              <div className="text-slate-500 text-sm leading-relaxed">{category?.description}</div>
             </div>
             
-            <div className="p-8 bg-gradient-to-b from-gray-800/20 to-gray-900/10 border border-gray-700/30 rounded-2xl">
-              <div className="text-sm text-gray-400 mb-4 uppercase tracking-wider">نوع الخدمة</div>
-              <div className="text-2xl font-bold text-white mb-3">{serviceType?.name}</div>
-              <div className="text-gray-500 text-sm leading-relaxed">{serviceType?.description}</div>
+            <div className="p-6 bg-gradient-to-b from-slate-800/10 to-slate-900/5 border border-slate-700/30 rounded-xl">
+              <div className="text-xs text-slate-400 mb-3 uppercase tracking-wider">نوع الخدمة</div>
+              <div className="text-xl font-semibold text-slate-100 mb-2">{serviceType?.name}</div>
+              <div className="text-slate-500 text-sm leading-relaxed">{serviceType?.description}</div>
             </div>
             
-            <div className="p-8 bg-gradient-to-b from-gray-800/20 to-gray-900/10 border border-gray-700/30 rounded-2xl">
-              <div className="text-sm text-gray-400 mb-4 uppercase tracking-wider">الباقة المختارة</div>
-              <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 mb-2">
+            <div className="p-6 bg-gradient-to-b from-slate-800/10 to-slate-900/5 border border-slate-700/30 rounded-xl">
+              <div className="text-xs text-slate-400 mb-3 uppercase tracking-wider">الباقة المختارة</div>
+              <div className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400 mb-2">
                 {plan?.name}
               </div>
-              <div className="text-2xl font-semibold text-white mb-1">{plan?.price} EGP</div>
-              <div className="text-gray-500 text-sm">
+              <div className="text-xl font-semibold text-slate-100 mb-1">{plan?.price} EGP</div>
+              <div className="text-slate-500 text-sm">
                 {plan?.billing === "weekly" ? "للأسبوع" : "للشهر"}
               </div>
             </div>
           </div>
 
           {/* Plan Details */}
-          <div className="p-8 bg-gradient-to-b from-gray-800/20 to-gray-900/10 border border-gray-700/30 rounded-2xl mb-12">
-            <h4 className="text-2xl font-bold text-white mb-8">تفاصيل الباقة التقنية</h4>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="text-center p-6 bg-gradient-to-b from-gray-800/30 to-gray-900/20 border border-gray-700/30 rounded-xl">
-                <div className="text-sm text-gray-400 mb-3">المعالج</div>
-                <div className="text-xl font-semibold text-white">
+          <div className="p-6 bg-gradient-to-b from-slate-800/10 to-slate-900/5 border border-slate-700/30 rounded-xl mb-10">
+            <h4 className="text-xl font-semibold text-slate-100 mb-6">تفاصيل الباقة التقنية</h4>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center p-4 bg-gradient-to-b from-slate-800/20 to-slate-900/10 border border-slate-700/30 rounded-lg">
+                <div className="text-xs text-slate-400 mb-2">المعالج</div>
+                <div className="text-lg font-medium text-slate-100">
                   {typeof plan?.cpu === "string" ? plan.cpu : plan?.cpu + " vCores"}
                 </div>
               </div>
               
-              <div className="text-center p-6 bg-gradient-to-b from-gray-800/30 to-gray-900/20 border border-gray-700/30 rounded-xl">
-                <div className="text-sm text-gray-400 mb-3">الذاكرة</div>
-                <div className="text-xl font-semibold text-white">{plan?.ram} MB</div>
+              <div className="text-center p-4 bg-gradient-to-b from-slate-800/20 to-slate-900/10 border border-slate-700/30 rounded-lg">
+                <div className="text-xs text-slate-400 mb-2">الذاكرة</div>
+                <div className="text-lg font-medium text-slate-100">{plan?.ram} MB</div>
               </div>
               
-              <div className="text-center p-6 bg-gradient-to-b from-gray-800/30 to-gray-900/20 border border-gray-700/30 rounded-xl">
-                <div className="text-sm text-gray-400 mb-3">التخزين</div>
-                <div className="text-xl font-semibold text-white">{plan?.disk} MB</div>
+              <div className="text-center p-4 bg-gradient-to-b from-slate-800/20 to-slate-900/10 border border-slate-700/30 rounded-lg">
+                <div className="text-xs text-slate-400 mb-2">التخزين</div>
+                <div className="text-lg font-medium text-slate-100">{plan?.disk} MB</div>
               </div>
               
-              <div className="text-center p-6 bg-gradient-to-b from-gray-800/30 to-gray-900/20 border border-gray-700/30 rounded-xl">
-                <div className="text-sm text-gray-400 mb-3">نوع الفوترة</div>
-                <div className="text-xl font-semibold text-white">
+              <div className="text-center p-4 bg-gradient-to-b from-slate-800/20 to-slate-900/10 border border-slate-700/30 rounded-lg">
+                <div className="text-xs text-slate-400 mb-2">نوع الفوترة</div>
+                <div className="text-lg font-medium text-slate-100">
                   {plan?.billing === "weekly" ? "أسبوعي" : "شهري"}
                 </div>
               </div>
@@ -729,12 +726,12 @@ function ReviewStep({
           </div>
 
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-6">
+          <div className="flex flex-col sm:flex-row gap-4">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={onPrevious}
-              className="flex-1 px-8 py-4 bg-gradient-to-b from-gray-800/30 to-gray-900/20 text-gray-300 rounded-xl font-semibold border border-gray-700/30 hover:border-gray-600 hover:text-white transition-all duration-300 backdrop-blur-sm"
+              className="flex-1 px-6 py-3 bg-gradient-to-b from-slate-800/20 to-slate-900/10 text-slate-300 rounded-lg font-medium border border-slate-700/30 hover:border-slate-600/50 hover:text-white transition-all duration-300"
             >
               تعديل الاختيارات
             </motion.button>
@@ -744,7 +741,7 @@ function ReviewStep({
               whileTap={{ scale: 0.95 }}
               onClick={onAddToCart}
               disabled={isLoading}
-              className="flex-1 px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-semibold border border-blue-400/30 hover:shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+              className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-lg font-medium border border-blue-400/30 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <>
