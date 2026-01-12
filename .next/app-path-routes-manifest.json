@@ -1,0 +1,20 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/about/page": "/about",
+  "/bot-hosting/page": "/bot-hosting",
+  "/contact/page": "/contact",
+  "/dev-environments/page": "/dev-environments",
+  "/faq/page": "/faq",
+  "/help-center/page": "/help-center",
+  "/page": "/",
+  "/plans/page": "/plans",
+  "/privacy-policy/page": "/privacy-policy",
+  "/refund-policy/page": "/refund-policy",
+  "/services/page": "/services",
+  "/status/page": "/status",
+  "/support/page": "/support",
+  "/terms/page": "/terms",
+  "/virtual-machines/page": "/virtual-machines",
+  "/web-servers/page": "/web-servers"
+}

@@ -1,0 +1,587 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Cosmic Core Spectrum */
+  --void-primary: #050510;
+  --nebula-deep: #0a0a1a;
+  --quantum-core: #0066ff;
+  --stellar-bright: #33ccff;
+  --cosmic-purple: #6600ff;
+
+  /* Energy Signatures */
+  --energy-cyan: #00ffcc;
+  --energy-pink: #ff3366;
+  --energy-gold: #ffcc00;
+
+  /* Background & Foreground */
+  --background: #050510;
+  --foreground: #f0f8ff;
+
+  /* Card Colors */
+  --card: rgba(15, 15, 30, 0.92);
+  --card-foreground: #f0f8ff;
+
+  /* Primary Colors */
+  --primary: #0066ff;
+  --primary-foreground: #ffffff;
+
+  /* Secondary Colors */
+  --secondary: #1a1a3a;
+  --secondary-foreground: #c8dcff;
+
+  /* Muted Colors */
+  --muted: #12122a;
+  --muted-foreground: #8a9aba;
+
+  /* Accent Colors */
+  --accent: #00ffcc;
+  --accent-foreground: #050510;
+
+  /* Border & Input */
+  --border: rgba(100, 200, 255, 0.12);
+  --input: rgba(20, 20, 40, 0.85);
+  --ring: #0066ff;
+
+  /* Destructive */
+  --destructive: #ff3366;
+  --destructive-foreground: #ffffff;
+
+  /* Radius */
+  --radius: 0.75rem;
+
+  /* Popover */
+  --popover: rgba(15, 15, 30, 0.95);
+  --popover-foreground: #f0f8ff;
+
+  /* Chart Colors */
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+
+  /* Sidebar Colors */
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+
+  /* Animation Durations */
+  --animation-smooth: 0.3s;
+  --animation-slow: 0.5s;
+  --animation-fast: 0.15s;
+}
+
+.light {
+  --background: #f8faff;
+  --foreground: #1a1a3a;
+  --card: rgba(255, 255, 255, 0.96);
+  --card-foreground: #1a1a3a;
+  --primary: #0066ff;
+  --primary-foreground: #ffffff;
+  --secondary: #e8f4ff;
+  --secondary-foreground: #1a1a3a;
+  --muted: #e6f7ff;
+  --muted-foreground: #4a4a6a;
+  --accent: #00ccaa;
+  --accent-foreground: #1a1a3a;
+  --border: rgba(0, 102, 255, 0.15);
+  --input: rgba(240, 248, 255, 0.95);
+  --popover: rgba(255, 255, 255, 0.98);
+  --popover-foreground: #1a1a3a;
+}
+
+@theme inline {
+  /* Typography */
+  --font-sans: var(--font-cairo), "Cairo", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: var(--font-inter), "Inter", "SF Mono", Monaco, "Cascadia Code", monospace;
+  
+  /* Custom Colors - يجب إضافتها هنا لتكون متاحة في Tailwind */
+  --color-void-primary: var(--void-primary);
+  --color-nebula-deep: var(--nebula-deep);
+  --color-quantum-core: var(--quantum-core);
+  --color-stellar-bright: var(--stellar-bright);
+  --color-cosmic-purple: var(--cosmic-purple);
+  --color-energy-cyan: var(--energy-cyan);
+  --color-energy-pink: var(--energy-pink);
+  --color-energy-gold: var(--energy-gold);
+  
+  /* Font Sizes (Using REM for scalability) */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  
+  /* Spacing (Using REM for consistency) */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  
+  /* Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  
+  /* Border Radius */
+  --radius-sm: calc(var(--radius) - 0.25rem);
+  --radius-md: calc(var(--radius) - 0.125rem);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 0.25rem);
+  
+  /* Chart Colors */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  
+  /* Sidebar Colors */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  
+  /* Animation Timing */
+  --animation-timing-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-timing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  body {
+    @apply bg-background text-foreground overflow-x-hidden;
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Typography Enhancements */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+  
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 2rem; }
+  h3 { font-size: 1.5rem; }
+  h4 { font-size: 1.25rem; }
+  
+  @media (max-width: 768px) {
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.25rem; }
+    h4 { font-size: 1.125rem; }
+  }
+
+  /* Enhanced Focus States */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+    outline-style: solid;
+  }
+
+  /* Improved accessibility for reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Better link styling */
+  a:not([class]) {
+    @apply text-primary underline underline-offset-2;
+    text-decoration-thickness: 1px;
+    transition: color var(--animation-fast) ease;
+  }
+  
+  a:not([class]):hover {
+    color: var(--stellar-bright);
+  }
+
+  /* Form Elements */
+  input,
+  textarea,
+  select {
+    font: inherit;
+    font-size: 1rem;
+    transition: all var(--animation-smooth) ease;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: rgba(var(--muted-foreground), 0.7);
+  }
+
+  /* Selection Styling */
+  ::selection {
+    background-color: rgba(var(--primary), 0.3);
+    color: var(--foreground);
+  }
+}
+
+/* Custom Scrollbar - Optimized */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--void-primary);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      to bottom,
+      var(--quantum-core),
+      var(--stellar-bright)
+    );
+    border-radius: 5px;
+    border: 2px solid var(--void-primary);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+      to bottom,
+      var(--stellar-bright),
+      var(--quantum-core)
+    );
+  }
+
+  /* Firefox Scrollbar */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--quantum-core) var(--void-primary);
+  }
+}
+
+/* Optimized Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes subtle-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes gentle-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(0, 102, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 102, 255, 0.3);
+  }
+}
+
+@keyframes rotate-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes text-shimmer {
+  0%, 100% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+}
+
+/* Animation Classes */
+.animate-fade-in {
+  animation: fade-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
+  will-change: opacity, transform;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+  will-change: opacity, transform;
+}
+
+.animate-subtle-pulse {
+  animation: subtle-pulse 3s ease-in-out infinite;
+}
+
+.animate-gentle-glow {
+  animation: gentle-glow 2s ease-in-out infinite;
+}
+
+.animate-rotate-slow {
+  animation: rotate-slow 30s linear infinite;
+}
+
+/* Staggered Animation Delays */
+.stagger-delay-1 { animation-delay: 0.1s; }
+.stagger-delay-2 { animation-delay: 0.2s; }
+.stagger-delay-3 { animation-delay: 0.3s; }
+.stagger-delay-4 { animation-delay: 0.4s; }
+.stagger-delay-5 { animation-delay: 0.5s; }
+
+/* Quantum Glass Effect - Optimized */
+.quantum-glass {
+  background: rgba(12, 12, 28, 0.85);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  border: 1px solid rgba(100, 200, 255, 0.08);
+  border-radius: var(--radius);
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  transition: all var(--animation-smooth) ease;
+}
+
+.quantum-glass:hover {
+  border-color: rgba(100, 200, 255, 0.15);
+  box-shadow: 
+    0 8px 30px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.light .quantum-glass {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 102, 255, 0.12);
+  box-shadow: 
+    0 4px 20px rgba(0, 102, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Text Gradient - Improved Performance */
+.text-cosmic-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--quantum-core) 0%,
+    var(--stellar-bright) 50%,
+    var(--energy-cyan) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: text-shimmer 3s ease-in-out infinite;
+}
+
+/* Button Enhancements */
+.btn-primary {
+  background: linear-gradient(to right, var(--primary), var(--stellar-bright));
+  color: var(--primary-foreground);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius);
+  font-weight: 500;
+  transition: all var(--animation-smooth) ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 102, 255, 0.25);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: rgba(var(--secondary), 0.8);
+  color: var(--secondary-foreground);
+  border: 1px solid var(--border);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius);
+  font-weight: 500;
+  transition: all var(--animation-smooth) ease;
+}
+
+.btn-secondary:hover {
+  background: var(--secondary);
+  border-color: rgba(var(--primary), 0.3);
+  transform: translateY(-2px);
+}
+
+/* Card Styles */
+.card {
+  background: rgba(15, 15, 30, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(100, 200, 255, 0.08);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: all var(--animation-smooth) ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  border-color: var(--primary);
+}
+
+/* Utility Classes */
+.text-balance {
+  text-wrap: balance;
+}
+
+.contain-content {
+  contain: content;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Responsive Typography */
+@media (max-width: 640px) {
+  .text-responsive {
+    font-size: clamp(0.875rem, 3vw, 1rem);
+  }
+  
+  .heading-responsive {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  * {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  :root {
+    --border: rgba(100, 200, 255, 0.3);
+    --muted-foreground: #5a6a8a;
+  }
+  
+  .quantum-glass {
+    border-width: 2px;
+  }
+}
+
+/* Reduced Transparency Support */
+@media (prefers-reduced-transparency: reduce) {
+  .quantum-glass {
+    background: rgba(12, 12, 28, 0.95);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  
+  .light .quantum-glass {
+    background: rgba(255, 255, 255, 0.98);
+  }
+}
+
+/* Custom color utility classes */
+.text-stellar-bright {
+  color: var(--stellar-bright);
+}
+
+.text-quantum-core {
+  color: var(--quantum-core);
+}
+
+.text-energy-cyan {
+  color: var(--energy-cyan);
+}
+
+.bg-stellar-bright {
+  background-color: var(--stellar-bright);
+}
+
+.bg-quantum-core {
+  background-color: var(--quantum-core);
+}
+
+.bg-energy-cyan {
+  background-color: var(--energy-cyan);
+}
