@@ -1,12 +1,13 @@
 "use client"
 
-import type React from "react"
-import { useEffect, useState, useCallback, memo } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 
 interface CosmicIntroProps {
   onComplete: () => void
 }
+
+type Phase = "entrance" | "logo" | "portal"
 
 const messages = [
   "نحن لا نستضيف… نحن نُشغّل المستقبل",
@@ -14,35 +15,8 @@ const messages = [
   "قوة – سرعة – تحكم كامل"
 ]
 
-type Phase = "logo" | "messages" | "portal"
-
-const Particle = memo(({ x, y, size, delay }: { x: number; y: number; size: number; delay: number }) => (
-  <div
-    className="absolute rounded-full bg-cyan-400/30"
-    style={{
-      left: `${x}%`,
-      top: `${y}%`,
-      width: `${size}px`,
-      height: `${size}px`,
-      animation: `float 3s ease-in-out infinite`,
-      animationDelay: `${delay}s`,
-      opacity: 0.4,
-      filter: "blur(0.5px)"
-    } as React.CSSProperties}
-  />
-))
-Particle.displayName = "Particle"
-
-const particles = Array.from({ length: 12 }, (_, i) => ({
-  id: i,
-  x: Math.random() * 100,
-  y: Math.random() * 100,
-  size: Math.random() * 1.5 + 0.5,
-  delay: i * 0.2,
-}))
-
 export function CosmicIntro({ onComplete }: CosmicIntroProps) {
-  const [phase, setPhase] = useState<Phase>("logo")
+  const [phase, setPhase] = useState<Phase>("entrance")
   const [messageIndex, setMessageIndex] = useState(0)
 
   const handleComplete = useCallback(() => {
@@ -50,12 +24,12 @@ export function CosmicIntro({ onComplete }: CosmicIntroProps) {
   }, [onComplete])
 
   useEffect(() => {
-    const timeline: { delay: number; action: () => void }[] = [
-      { delay: 2500, action: () => setPhase("messages") },
-      { delay: 4000, action: () => setMessageIndex(1) },
-      { delay: 5500, action: () => setMessageIndex(2) },
-      { delay: 7000, action: () => setPhase("portal") },
-      { delay: 7500, action: handleComplete },
+    const timeline = [
+      { delay: 2000, action: () => setPhase("logo") },
+      { delay: 3000, action: () => setMessageIndex(1) },
+      { delay: 4000, action: () => setMessageIndex(2) },
+      { delay: 5000, action: () => setPhase("portal") },
+      { delay: 5500, action: handleComplete },
     ]
 
     const timers = timeline.map(({ delay, action }) => setTimeout(action, delay))
@@ -63,230 +37,203 @@ export function CosmicIntro({ onComplete }: CosmicIntroProps) {
   }, [handleComplete])
 
   return (
-    <div className="fixed inset-0 bg-[#050510] overflow-hidden z-50">
-      {/* Custom Animations */}
-      <style jsx global>{`
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0) translateZ(0);
-          }
-          50% {
-            transform: translateY(-15px) translateZ(0);
-          }
-        }
-        
-        @keyframes pulse-glow {
-          0%, 100% {
-            filter: drop-shadow(0 0 30px rgba(0, 102, 255, 0.4));
-          }
-          50% {
-            filter: drop-shadow(0 0 50px rgba(0, 102, 255, 0.8));
-          }
-        }
-        
-        @keyframes rotate-3d {
-          0% {
-            transform: rotateY(0deg) rotateX(0deg) translateZ(0);
-          }
-          25% {
-            transform: rotateY(90deg) rotateX(15deg) translateZ(20px);
-          }
-          50% {
-            transform: rotateY(180deg) rotateX(0deg) translateZ(0);
-          }
-          75% {
-            transform: rotateY(270deg) rotateX(-15deg) translateZ(-20px);
-          }
-          100% {
-            transform: rotateY(360deg) rotateX(0deg) translateZ(0);
-          }
-        }
-        
-        @keyframes portal-expand {
-          0% {
-            transform: scale(0.1) rotate(0deg);
-            opacity: 1;
-          }
-          100% {
-            transform: scale(20) rotate(180deg);
-            opacity: 0;
-          }
-        }
-        
-        .logo-3d {
-          transform-style: preserve-3d;
-          perspective: 1000px;
-        }
-      `}</style>
-
-      {/* Background gradient */}
+    <div className="fixed inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 overflow-hidden z-50">
+      {/* 3D Background Effect */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#050510] via-[#0a0a1a] to-[#050510]" />
-        <div className="absolute top-1/4 left-1/4 w-1/3 h-1/3 bg-gradient-to-r from-blue-900/10 to-purple-900/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-1/3 h-1/3 bg-gradient-to-r from-cyan-900/10 to-blue-900/10 rounded-full blur-3xl" />
+        {/* Subtle Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/5 via-transparent to-cyan-900/5"></div>
+        
+        {/* Animated Grid Pattern */}
+        <div 
+          className="absolute inset-0 opacity-5"
+          style={{
+            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+            backgroundSize: '50px 50px',
+            transform: 'perspective(500px) rotateX(60deg)',
+            transformOrigin: 'center',
+          }}
+        />
       </div>
 
-      {/* Particles */}
-      <div className="absolute inset-0">
-        {particles.map((particle) => (
-          <Particle key={particle.id} {...particle} />
-        ))}
-      </div>
+      {/* 3D Logo Entrance */}
+      <AnimatePresence mode="wait">
+        {phase === "entrance" && (
+          <motion.div
+            key="entrance"
+            className="absolute inset-0 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            style={{ perspective: '1000px' }}
+          >
+            <motion.div
+              initial={{ 
+                rotateY: -180,
+                rotateX: 45,
+                scale: 0.5,
+                opacity: 0 
+              }}
+              animate={{ 
+                rotateY: 0,
+                rotateX: 0,
+                scale: 1,
+                opacity: 1 
+              }}
+              transition={{ 
+                rotateY: { 
+                  duration: 1.2,
+                  ease: [0.34, 1.56, 0.64, 1]
+                },
+                rotateX: { 
+                  duration: 1,
+                  ease: "easeOut",
+                  delay: 0.3
+                },
+                scale: { 
+                  duration: 1,
+                  ease: "easeOut",
+                  delay: 0.3
+                }
+              }}
+              className="relative"
+              style={{ 
+                transformStyle: 'preserve-3d',
+              }}
+            >
+              {/* Logo Container with 3D Depth */}
+              <div 
+                className="relative"
+                style={{ 
+                  transformStyle: 'preserve-3d',
+                }}
+              >
+                {/* Front Layer - Main Logo */}
+                <motion.div
+                  className="relative"
+                  style={{ 
+                    transformStyle: 'preserve-3d',
+                  }}
+                >
+                  <motion.img
+                    src="https://a.top4top.io/p_3605ck8qd0.png"
+                    alt="X-Host Logo"
+                    className="w-40 h-40 md:w-56 md:h-56 object-contain"
+                    style={{
+                      filter: 'drop-shadow(0 20px 40px rgba(0, 102, 255, 0.5))',
+                    }}
+                  />
+                  
+                  {/* 3D Edge Glow */}
+                  <motion.div
+                    className="absolute inset-0"
+                    style={{
+                      background: 'radial-gradient(circle at center, rgba(0, 102, 255, 0.3), transparent 70%)',
+                      filter: 'blur(20px)',
+                    }}
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                </motion.div>
 
-      {/* Logo Phase */}
+                {/* 3D Shadow Layer */}
+                <motion.div
+                  className="absolute inset-0"
+                  style={{
+                    background: 'linear-gradient(to bottom, transparent 70%, rgba(0, 0, 0, 0.5) 100%)',
+                    filter: 'blur(10px)',
+                    transform: 'translateZ(-20px)',
+                  }}
+                />
+              </div>
+
+              {/* Floating Particles (Subtle) */}
+              <div className="absolute inset-0">
+                {[...Array(4)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-1 h-1 bg-blue-400/40 rounded-full"
+                    style={{
+                      left: `${50 + Math.sin(i * Math.PI * 2 / 4) * 40}%`,
+                      top: `${50 + Math.cos(i * Math.PI * 2 / 4) * 40}%`,
+                    }}
+                    animate={{
+                      scale: [1, 1.5, 1],
+                      opacity: [0.3, 0.6, 0.3],
+                    }}
+                    transition={{
+                      duration: 2,
+                      delay: i * 0.5,
+                      repeat: Infinity,
+                    }}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Logo Phase with Text */}
       <AnimatePresence mode="wait">
         {phase === "logo" && (
           <motion.div
+            key="logo"
             className="absolute inset-0 flex flex-col items-center justify-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
+            transition={{ duration: 0.3 }}
           >
-            {/* 3D Container */}
-            <div className="logo-3d relative">
-              {/* Outer Orbital Rings */}
+            {/* 3D Logo Display */}
+            <div className="relative mb-8" style={{ perspective: '1000px' }}>
               <motion.div
-                className="absolute -inset-20 rounded-full border border-blue-500/10"
-                initial={{ scale: 0.5, rotateX: 90 }}
                 animate={{ 
-                  scale: 1,
-                  rotateX: 0,
-                  rotateY: 360
+                  rotateY: [0, 5, -5, 0],
+                  rotateX: [0, 2, -2, 0],
                 }}
-                transition={{ 
+                transition={{
                   duration: 8,
-                  ease: "linear",
-                  rotateY: { duration: 20, repeat: Infinity, ease: "linear" }
+                  repeat: Infinity,
+                  ease: "easeInOut"
                 }}
-              />
-              
-              <motion.div
-                className="absolute -inset-16 rounded-full border border-cyan-400/15"
-                initial={{ scale: 0.5, rotateX: -90 }}
-                animate={{ 
-                  scale: 1,
-                  rotateX: 0,
-                  rotateY: -360
-                }}
-                transition={{ 
-                  duration: 6,
-                  ease: "linear",
-                  rotateY: { duration: 15, repeat: Infinity, ease: "linear" }
-                }}
-              />
-
-              {/* Main Logo Container */}
-              <motion.div
-                className="relative z-10"
-                initial={{ scale: 0.8, opacity: 0, rotateY: -90 }}
-                animate={{ 
-                  scale: 1,
-                  opacity: 1,
-                  rotateY: 0
-                }}
-                transition={{ 
-                  type: "spring",
-                  stiffness: 120,
-                  damping: 20,
-                  delay: 0.2
-                }}
+                className="relative"
+                style={{ transformStyle: 'preserve-3d' }}
               >
-                {/* Glow Effect */}
-                <motion.div
-                  className="absolute -inset-12 rounded-full"
-                  animate={{
-                    background: [
-                      "radial-gradient(circle, rgba(0, 102, 255, 0.3) 0%, transparent 70%)",
-                      "radial-gradient(circle, rgba(0, 102, 255, 0.5) 0%, transparent 70%)",
-                      "radial-gradient(circle, rgba(0, 102, 255, 0.3) 0%, transparent 70%)"
-                    ]
+                <motion.img
+                  src="https://a.top4top.io/p_3605ck8qd0.png"
+                  alt="X-Host Logo"
+                  className="w-32 h-32 md:w-44 md:h-44 object-contain"
+                  style={{
+                    filter: 'drop-shadow(0 15px 30px rgba(0, 102, 255, 0.4))',
                   }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  style={{ filter: "blur(20px)" }}
                 />
-
-                {/* Logo Image with 3D Rotation */}
-                <motion.div
-                  className="relative"
-                  animate={{
-                    rotateY: [0, 180, 360],
-                    rotateX: [0, 15, 0]
+                
+                {/* Ambient Glow */}
+                <div 
+                  className="absolute inset-0 -z-10"
+                  style={{
+                    background: 'radial-gradient(circle at center, rgba(0, 102, 255, 0.2), transparent 60%)',
+                    filter: 'blur(30px)',
                   }}
-                  transition={{
-                    rotateY: {
-                      duration: 12,
-                      repeat: Infinity,
-                      ease: "linear"
-                    },
-                    rotateX: {
-                      duration: 8,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }
-                  }}
-                >
-                  <img
-                    src="https://a.top4top.io/p_3605ck8qd0.png"
-                    alt="X-Host Logo"
-                    className="w-32 h-32 md:w-40 md:h-40 object-contain relative z-10"
-                    style={{
-                      filter: "drop-shadow(0 0 40px rgba(0, 102, 255, 0.5))",
-                      animation: "pulse-glow 3s ease-in-out infinite"
-                    }}
-                  />
-                  
-                  {/* Inner Glow */}
-                  <div 
-                    className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-400/20 rounded-full blur-xl"
-                    style={{ transform: "translateZ(-10px)" }}
-                  />
-                </motion.div>
-
-                {/* Orbiting Dots */}
-                {[...Array(8)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute w-2 h-2 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400"
-                    style={{
-                      top: `calc(50% - 1px)`,
-                      left: `calc(50% - 1px)`,
-                      transform: `rotate(${i * 45}deg) translateX(60px) rotate(-${i * 45}deg)`,
-                      boxShadow: "0 0 10px rgba(0, 200, 255, 0.7)"
-                    }}
-                    animate={{
-                      rotate: 360,
-                      scale: [1, 1.3, 1]
-                    }}
-                    transition={{
-                      rotate: {
-                        duration: 20,
-                        repeat: Infinity,
-                        ease: "linear"
-                      },
-                      scale: {
-                        duration: 2,
-                        repeat: Infinity,
-                        delay: i * 0.2
-                      }
-                    }}
-                  />
-                ))}
+                />
               </motion.div>
             </div>
 
-            {/* Brand Name */}
+            {/* Brand Name with 3D Effect */}
             <motion.h1
-              className="mt-8 text-4xl md:text-5xl font-bold tracking-tight"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.5 }}
-              style={{
-                background: "linear-gradient(135deg, #0066ff 0%, #33ccff 50%, #00ffcc 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                backgroundSize: "200% auto"
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="text-4xl md:text-5xl font-bold mb-2"
+              style={{ 
+                background: 'linear-gradient(135deg, #0066ff 0%, #33ccff 50%, #00ffcc 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                textShadow: '0 5px 20px rgba(0, 102, 255, 0.3)',
+                transformStyle: 'preserve-3d',
               }}
             >
               X-Host
@@ -294,79 +241,100 @@ export function CosmicIntro({ onComplete }: CosmicIntroProps) {
 
             {/* Tagline */}
             <motion.p
-              className="mt-3 text-sm text-cyan-300/60 tracking-wider uppercase"
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1, duration: 0.5 }}
+              animate={{ opacity: 0.7 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className="text-sm text-cyan-300/70 tracking-wider uppercase"
             >
               Digital Universe
             </motion.p>
+
+            {/* Rotating Orbital Rings */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              {[...Array(2)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute border border-blue-500/20 rounded-full"
+                  style={{
+                    width: `${160 + i * 100}px`,
+                    height: `${160 + i * 100}px`,
+                  }}
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    duration: 20 + i * 10,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                />
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Messages Phase */}
+      {/* Animated Messages */}
       <AnimatePresence mode="wait">
-        {phase === "messages" && (
+        {phase === "logo" && (
           <motion.div
-            key={messageIndex}
-            className="absolute inset-0 flex items-center justify-center px-6"
-            initial={{ opacity: 0, y: 40 }}
+            key={`message-${messageIndex}`}
+            className="absolute bottom-32 left-0 right-0 flex justify-center"
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -40 }}
-            transition={{ 
-              type: "spring",
-              stiffness: 100,
-              damping: 15
-            }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
           >
-            {/* Message Background */}
-            <motion.div
-              className="absolute w-[400px] h-[400px] rounded-full opacity-10"
-              style={{
-                background: "radial-gradient(circle, rgba(0, 102, 255, 0.3) 0%, transparent 70%)"
-              }}
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 3, repeat: Infinity }}
-            />
-
-            <motion.h2
-              className="text-2xl md:text-3xl lg:text-4xl font-bold text-center max-w-2xl leading-relaxed"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.1 }}
-              style={{
-                background: "linear-gradient(135deg, #0066ff 0%, #33ccff 60%, #00ffcc 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                backgroundSize: "200% auto"
-              }}
-            >
-              {messages[messageIndex]}
-            </motion.h2>
+            <div className="relative">
+              {/* Message Background */}
+              <div className="absolute inset-0 -m-4 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 blur-xl rounded-lg"></div>
+              
+              <motion.h2
+                className="text-xl md:text-2xl font-medium text-center px-8 py-4 relative"
+                style={{ 
+                  background: 'linear-gradient(135deg, #0066ff 0%, #33ccff 50%, #00ffcc 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                }}
+              >
+                {messages[messageIndex]}
+              </motion.h2>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Portal Phase */}
+      {/* Portal Transition */}
       <AnimatePresence>
         {phase === "portal" && (
-          <motion.div className="absolute inset-0 flex items-center justify-center">
+          <motion.div
+            key="portal"
+            className="absolute inset-0 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Expanding Portal */}
             <motion.div
-              className="relative rounded-full"
-              initial={{ width: 4, height: 4, opacity: 1 }}
-              animate={{
-                width: 4000,
-                height: 4000,
-                opacity: [1, 0.8, 0]
+              className="absolute rounded-full"
+              initial={{ 
+                width: 0,
+                height: 0,
+                opacity: 1,
+                scale: 0.5 
+              }}
+              animate={{ 
+                width: 2000,
+                height: 2000,
+                opacity: [1, 0.9, 0],
+                scale: 1
               }}
               transition={{ 
                 duration: 0.5,
-                ease: "easeIn"
+                ease: "easeInOut" 
               }}
               style={{
-                background: "radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(0, 102, 255, 0.6) 20%, transparent 60%)"
+                background: 'radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(0, 102, 255, 0.6) 30%, transparent 70%)',
               }}
             />
           </motion.div>
@@ -374,59 +342,31 @@ export function CosmicIntro({ onComplete }: CosmicIntroProps) {
       </AnimatePresence>
 
       {/* Progress Indicator */}
-      <div className={`absolute bottom-10 left-1/2 -translate-x-1/2 transition-opacity duration-300 ${phase === "portal" ? "opacity-0" : "opacity-100"}`}>
-        <div className="flex items-center gap-3">
-          {/* Progress Dots */}
-          <div className="flex gap-1.5">
-            {[...Array(3)].map((_, i) => (
-              <motion.div
-                key={i}
-                className={`w-1.5 h-1.5 rounded-full ${
-                  (phase === "logo" && i === 0) || 
-                  (phase === "messages" && i <= messageIndex) 
-                    ? "bg-gradient-to-r from-blue-400 to-cyan-400" 
-                    : "bg-slate-600/30"
-                }`}
-                animate={phase === "messages" && i === messageIndex ? {
-                  scale: [1, 1.3, 1]
-                } : {}}
-                transition={{
-                  scale: {
-                    duration: 1,
-                    repeat: Infinity
-                  }
-                }}
-              />
-            ))}
-          </div>
-          
-          {/* Status Text */}
-          <motion.span 
-            className="text-xs text-cyan-300/50 tracking-wider"
-            key={`${phase}-${messageIndex}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            {phase === "logo" ? "جاري الإعداد..." : 
-             phase === "messages" ? `رسالة ${messageIndex + 1} من 3` : 
-             "جاري الإنتقال..."}
-          </motion.span>
-        </div>
-        
-        {/* Progress Bar */}
-        <div className="mt-2 w-48 h-0.5 bg-slate-700/30 rounded-full overflow-hidden">
+      <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 transition-opacity duration-300 ${
+        phase === "portal" ? "opacity-0" : "opacity-100"
+      }`}>
+        <div className="w-48 h-1 bg-slate-800/50 rounded-full overflow-hidden">
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400"
+            className="h-full rounded-full"
+            style={{
+              background: 'linear-gradient(90deg, #0066ff, #33ccff, #00ffcc)',
+            }}
             initial={{ width: "0%" }}
             animate={{
-              width: phase === "logo" ? "33%" : 
-                     phase === "messages" ? `${33 + (messageIndex + 1) * 22}%` : 
-                     "100%"
+              width: phase === "entrance" ? "20%" : 
+                     phase === "logo" ? `${20 + (messageIndex + 1) * 26}%` : "100%"
             }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            transition={{ duration: 0.3 }}
           />
         </div>
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center text-xs text-slate-400 mt-2 tracking-wider"
+        >
+          {phase === "logo" ? `${messageIndex + 1} / ${messages.length}` : "جاري التحميل..."}
+        </motion.p>
       </div>
     </div>
   )
-                    }
+}
